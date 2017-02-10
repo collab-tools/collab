@@ -1,3 +1,17 @@
 {
-  "extends": "airbnb",
+    "extends": "airbnb",
+    "plugins": [
+        "react",
+        "jsx-a11y"
+    ],
+
+    "rules": {
+      "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+      "import/no-extraneous-dependencies": [
+        "error", {"devDependencies": ["**/*.test.js", "**/*.spec.js"]}
+      ],
+    },
+    "env": {
+      "mocha": true
+    }
 }
