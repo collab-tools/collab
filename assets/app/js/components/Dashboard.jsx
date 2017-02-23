@@ -69,7 +69,7 @@ class Dashboard extends Component {
       milestonesByProject[projectId].push({
         content: 'Default Milestone',
         deadline: null,
-        key: projectId + 'uncategorized-tasks',
+        key: `${projectId}_uncategorized-tasks`,
         id: null,
       });
     });
@@ -86,7 +86,7 @@ class Dashboard extends Component {
         const taskList = filteredTasks.filter(task =>
           task.project_id === projectId && task.milestone_id === milestone.id
         );
-        if (taskList.length > 0 || true) {
+        if (taskList.length > 0) {
           const milestoneView = (
             <MilestoneRow
               milestone={milestone}

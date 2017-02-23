@@ -184,7 +184,7 @@ class MilestoneView extends Component {
     );
   }
   renderEmptyArea() {
-    return (this.props.milestones.length === 0 &&
+    return (this.props.milestones.length === 0 && this.props.tasks.length === 0 &&
       <div className="container">
         <div className="task-list">
           <div className="no-items todo-empty">
