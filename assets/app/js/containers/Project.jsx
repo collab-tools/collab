@@ -73,15 +73,17 @@ class Project extends Component {
               app={app}
             />
           </Tab>
-          <Tab
-            label="Newsfeed"
-            value={AppConstants.PATH.newsfeed}
-            onActive={this.changeTabToNewsfeed}
-          >
-            <ProjectNewsfeedView
-              users={activeUsers}
-            />
-          </Tab>
+          {/*
+            <Tab
+              label="Newsfeed"
+              value={AppConstants.PATH.newsfeed}
+              onActive={this.changeTabToNewsfeed}
+            >
+              <ProjectNewsfeedView
+                users={activeUsers}
+              />
+            </Tab>
+            */}
           <Tab
             label="Settings"
             value={AppConstants.PATH.settings}

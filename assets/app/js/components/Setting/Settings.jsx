@@ -136,7 +136,31 @@ class Settings extends Component {
       this.props.actions.renameProject(this.props.project.id, this.state.inputProjectName);
     }
   }
-
+  renderChatRoomSetting() {
+    const chatName = this.props.project.chatroom || 'None';
+    const chatLabel = `Current chat room: ${chatName}`;
+    return (
+      <Panel header="Chat Room" bsStyle="info">
+        <form onSubmit={this.changeChatRoom}>
+          <FormGroup>
+            <ControlLabel>{chatLabel}</ControlLabel>
+            <InputGroup>
+              <FormControl
+                type="text"
+                inputRef={ref => { this.chatNameInput = ref; }}
+                value={this.state.chatName}
+                placeholder="Chat room name"
+                onChange={this.chatNameChange}
+              />
+              <InputGroup.Button>
+                <Button type="submit">Join</Button>
+              </InputGroup.Button>
+            </InputGroup>
+          </FormGroup>
+        </form>
+      </Panel>
+    );
+  }
   render() {
     const listGroups = [];
     const alertStatus = this.props.alerts.project_invitation;
@@ -277,11 +301,6 @@ class Settings extends Component {
       );
     }
 
-    let chatName = 'None';
-    if (project.chatroom) {
-      chatName = project.chatroom;
-    }
-    const chatLabel = `Current chat room: ${chatName}`;
     return (
       <div className="settings">
         <ListGroup>
@@ -313,27 +332,7 @@ class Settings extends Component {
         <Panel header="GitHub Integration" bsStyle="info">
           {githubPanel}
         </Panel>
-
-        <Panel header="Chat Room" bsStyle="info">
-          <form onSubmit={this.changeChatRoom}>
-            <FormGroup>
-              <ControlLabel>{chatLabel}</ControlLabel>
-              <InputGroup>
-                <FormControl
-                  type="text"
-                  inputRef={ref => { this.chatNameInput = ref; }}
-                  value={this.state.chatName}
-                  placeholder="Chat room name"
-                  onChange={this.chatNameChange}
-                />
-                <InputGroup.Button>
-                  <Button type="submit">Join</Button>
-                </InputGroup.Button>
-              </InputGroup>
-            </FormGroup>
-          </form>
-        </Panel>
-
+        {this.renderChatRoomSetting() && false}
         <Panel header="Options" bsStyle="info">
           <form onSubmit={this.renameProject}>
             <ControlLabel>
