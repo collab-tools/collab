@@ -33,6 +33,10 @@ class TaskModal extends Component {
   }
 
   onDialogSubmit() {
+    if (!this.state.milestoneId) {
+      this.disableButton();
+      return;
+    }
     const content = this.taskInputField.getValue().trim();
     if (content !== '') {
       this.props.taskMethod(content, this.state.assigneeId, this.state.milestoneId);
@@ -54,6 +58,10 @@ class TaskModal extends Component {
   }
   handleMilestoneIdChange(event, index, value) {
     this.setState({ milestoneId: value });
+    if (!this.state.milestoneId) {
+      this.disableButton();
+    }
+    this.enableButton();
   }
   render() {
     const actions = [
@@ -114,16 +122,14 @@ class TaskModal extends Component {
             value={this.props.content}
           />
           <br />
-          <FormsySelect
-            required
-            name="selectMilestone"
+          <SelectField
             value={this.state.milestoneId}
             onChange={this.handleMilestoneIdChange}
             floatingLabelFixed
-            floatingLabelText="Milestone"
+            floatingLabelText="Milestone  (required)"
           >
             {possibleMilestones}
-          </FormsySelect>
+          </SelectField>
           <br />
           <SelectField
             value={this.state.assigneeId}
