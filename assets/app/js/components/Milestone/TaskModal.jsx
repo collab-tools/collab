@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import { Form } from 'formsy-react';
 import FormsyText from 'formsy-material-ui/lib/FormsyText';
+import FormsySelect from 'formsy-material-ui/lib/FormsySelect';
 
 const propTypes = {
   title: PropTypes.string.isRequired,
@@ -113,15 +114,16 @@ class TaskModal extends Component {
             value={this.props.content}
           />
           <br />
-          <SelectField
+          <FormsySelect
             required
+            name="selectMilestone"
             value={this.state.milestoneId}
             onChange={this.handleMilestoneIdChange}
             floatingLabelFixed
             floatingLabelText="Milestone"
           >
             {possibleMilestones}
-          </SelectField>
+          </FormsySelect>
           <br />
           <SelectField
             value={this.state.assigneeId}
