@@ -122,7 +122,7 @@ function updateTask(request, reply) {
                             updatedMilestone,
                           },
                         }).then(function(message) {
-                          socket.sendAddDiscussionMessageToProject(updatedTaskValues.project_id, message)
+                          socket.sendNewSystemMessageToProject(updatedTaskValues.project_id, message)
                         });
                         storage.createSystemMessage(updatedTaskValues.project_id, updatedTaskValues.milestone_id,
                         constants.systemMessageTypes.REASSIGN_TASK_TO_MILESTONE, {
@@ -137,7 +137,7 @@ function updateTask(request, reply) {
                             updatedMilestone,
                           },
                         }).then(function(message) {
-                          socket.sendAddDiscussionMessageToProject(updatedTaskValues.project_id, message)
+                          socket.sendNewSystemMessageToProject(updatedTaskValues.project_id, message)
                         });
                       });
                     });
@@ -155,7 +155,7 @@ function updateTask(request, reply) {
                         updatedContent: updatedTaskValues.content,
                       },
                     }).then(function(message) {
-                      socket.sendAddDiscussionMessageToProject(updatedTaskValues.project_id, message)
+                      socket.sendNewSystemMessageToProject(updatedTaskValues.project_id, message)
                     });
                   }
                   if (originalTaskValues.assignee_id !== updatedTaskValues.assignee_id) {
@@ -186,7 +186,7 @@ function updateTask(request, reply) {
                             updatedAssignee,
                           },
                         }).then(function(message) {
-                          socket.sendAddDiscussionMessageToProject(updatedTaskValues.project_id, message);
+                          socket.sendNewSystemMessageToProject(updatedTaskValues.project_id, message);
                         });
                       });
                     });
@@ -203,7 +203,7 @@ function updateTask(request, reply) {
                         content: updatedTaskValues.content,
                       },
                     }).then(function(message) {
-                      socket.sendAddDiscussionMessageToProject(updatedTaskValues.project_id, message)
+                      socket.sendNewSystemMessageToProject(updatedTaskValues.project_id, message)
                     });
                   }
                 });
@@ -288,7 +288,7 @@ function createTask(request, reply) {
                   content: newTask.content,
                 },
               }).then(function(message) {
-                socket.sendAddDiscussionMessageToProject(newTask.project_id, message)
+                socket.sendNewSystemMessageToProject(newTask.project_id, message)
               });
             });
 
@@ -393,7 +393,7 @@ function markTaskAsDone(request, reply) {
                       content: result.task.content,
                     },
                   }).then(function(message) {
-                    socket.sendAddDiscussionMessageToProject(result.task.project_id, message)
+                    socket.sendNewSystemMessageToProject(result.task.project_id, message)
                   }, function(err) {
                     console.error('store fail to create message');
                     console.error(err);
@@ -457,7 +457,7 @@ function deleteTask(request, reply) {
                       content: result.task.content,
                     },
                   }).then(function(message) {
-                    socket.sendAddDiscussionMessageToProject(result.task.project_id, message)
+                    socket.sendNewSystemMessageToProject(result.task.project_id, message)
                   }, function(err) {
                     console.error('store fail to create message');
                     console.error(err);
