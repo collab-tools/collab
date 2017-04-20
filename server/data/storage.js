@@ -11,6 +11,7 @@ var Project = models.Project;
 var UserProject = models.UserProject;
 var Notification = models.Notification;
 var Newsfeed = models.Newsfeed;
+var Message = models.Message;
 var analytics = require('collab-analytics')(config.database, config.logging_database);
 var format = require('string-format');
 
@@ -308,6 +309,9 @@ module.exports = {
     getMilestone: function(milestone_id) {
         return Milestone.find({where : {id: milestone_id}});
     },
+    findMilestoneById: function(milestone_id) {
+      return Milestone.findById(milestone_id);
+    },
     doesTaskExist: function(task_id) {
         return Task.isExist(task_id);
     },
@@ -424,5 +428,63 @@ module.exports = {
                 id: milestone_id
             }
         });
-    }
+    },
+    createSystemMessage: function(projectId, milestoneId, type, data) {
+      const message = {
+        project_id: projectId,
+        milestone_id: milestoneId,
+        content: type,
+        data: JSON.stringify(data),
+        pinned: false,
+        author_id: null,
+      };
+      return Project.isExist(message.project_id).then(function(exists) {
+        if (!exists) {
+          return Promise.reject(format(constants.PROJECT_NOT_EXIST, message.project_id));
+        }
+        message.id = shortid.generate()
+        return Message.create(message)
+      });
+    },
+    createMessage: function(message) {
+      return Project.isExist(message.project_id).then(function(exists) {
+        if (!exists) {
+          return Promise.reject(format(constants.PROJECT_NOT_EXIST, message.project_id));
+        }
+        message.id = shortid.generate()
+        return Message.create(message)
+      });
+    },
+    getMessagesWithCondition: function(condition) {
+        return Message.findAll({
+            where: condition
+        })
+    },
+    findProjectOfMessage:function(messageId) {
+      return new Promise(function(resolve, reject) {
+        Message.findById(messageId).then(function (message) {
+          if (!message) {
+            reject(messageId)
+            return
+          }
+          Project.findById(message.project_id).then(function(project) {
+            resolve({ project: project, message: message })
+          })
+        })
+      })
+    },
+    updateMessage: function(payload, messageId) {
+      return Message.update(payload, {
+        where: {
+          id: messageId,
+        },
+      });
+    },
+    deleteMessage: function(messageId) {
+      return Message.destroy({
+        where: {
+          id: messageId,
+        },
+      });
+    },
 };

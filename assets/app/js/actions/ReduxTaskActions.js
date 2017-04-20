@@ -6,14 +6,13 @@ import Promise from 'bluebird';
 import { serverCreateTask, serverDeleteTask, serverUpdateGithubLogin, serverMarkDone,
   serverPopulate, serverCreateMilestone, serverCreateProject, serverCreatePost,
   serverInviteToProject, serverGetNotifications, serverAcceptProject,
-  serverDeleteNotification, serverDeleteMilestone, getGoogleDriveFolders,
+  serverDeleteNotification, serverDeleteMilestone, serverEditNotification, getGoogleDriveFolders,
   getChildrenFiles, getFileInfo, serverUpdateProject, getGithubRepos,
   syncGithubIssues, serverEditTask, serverEditMilestone, queryGithub, setupGithubWebhook,
   queryGoogleDrive, serverDeclineProject, uploadFile, removeFile, renameFile, copyFile,
-  createFolder, moveFile,
-  serverGetNewesfeed, refreshTokens, listRepoEvents,
-} from '../utils/apiUtil';
-import { isObjectPresent, filterUnique, getCurrentProject, getNewColour } from '../utils/general';
+  createFolder, moveFile, serverCreateMessage, serverEditMessage, serverDeleteMessage,
+  serverGetNewesfeed, refreshTokens, listRepoEvents } from '../utils/apiUtil';
+import { filterUnique, getCurrentProject, getNewColour, getLocalUserId } from '../utils/general';
 import { userIsOnline } from './SocketActions';
 import { logout } from '../utils/auth';
 import * as AppConstants from '../AppConstants';
@@ -99,6 +98,12 @@ export const _setDirectoryAsRoot = makeActionCreator(AppConstants.SET_DIRECTORY_
 export const _setDefaultGithubRepo = makeActionCreator(AppConstants.SET_GITHUB_REPO, 'projectId',
   'repoName', 'repoOwner');
 export const addMessage = makeActionCreator(AppConstants.ADD_MESSAGE, 'message');
+export const _pinMessage = makeActionCreator(AppConstants.PIN_MESSAGE, 'id');
+export const _unpinMessage = makeActionCreator(AppConstants.UNPIN_MESSAGE, 'id');
+export const _editMessageContent = makeActionCreator(AppConstants.EDIT_MESSAGE_CONTENT,
+  'id', 'content');
+export const _editMessage = makeActionCreator(AppConstants.EDIT_MESSAGE, 'id', 'message');
+export const _deleteMessage = makeActionCreator(AppConstants.DELETE_MESSAGE, 'id');
 export const userOnline = makeActionCreator(AppConstants.USER_ONLINE, 'id');
 export const userOffline = makeActionCreator(AppConstants.USER_OFFLINE, 'id');
 export const addUsers = makeActionCreator(AppConstants.ADD_USERS, 'users');
@@ -107,6 +112,7 @@ export const userStopEditing = makeActionCreator(AppConstants.USER_STOP_EDITING,
   'id', 'user_id');
 export const newNotification = makeActionCreator(AppConstants.NEW_NOTIFICATION, 'notif');
 export const _deleteNotification = makeActionCreator(AppConstants.DELETE_NOTIFICATION, 'id');
+export const _editNotification = makeActionCreator(AppConstants.EDIT_NOTIFICATION, 'id', 'notif');
 
 export const addUser = (user) => (
   (dispatch, getState) => {
@@ -209,7 +215,7 @@ Content-Transfer-Encoding:base64\r\n\r\n${base64Data}${closeDelimiter}`;
         dispatch(insertFile(newFile));
         dispatch(snackbarMessage(`${newFile.name} uploaded successfully`, 'default'));
         const payload = {
-          user_id: localStorage.getItem('user_id'),
+          user_id: getLocalUserId(),
           fileName: file.name,
         };
         serverCreatePost({
@@ -487,7 +493,7 @@ export const declineProject = (projectId, notificationId) => (
   export function initializeApp() {
     return function(dispatch) {
       dispatch(addUsers([{
-        id: localStorage.getItem('user_id'),
+        id: getLocalUserId(),
         email: localStorage.getItem('email'),
         display_name: localStorage.getItem('display_name'),
         display_image: localStorage.getItem('display_image'),
@@ -509,6 +515,7 @@ export const declineProject = (projectId, notificationId) => (
         loading: true,
         queryString: '',
         searchFilter: 'all',
+        showSidebar: true,
       }));
       dispatch(initSnackbar({
         isOpen: false,
@@ -526,6 +533,7 @@ export const declineProject = (projectId, notificationId) => (
           dispatch(initMilestones(normalizedTables.milestones));
           dispatch(initProjects(normalizedTables.projects));
           dispatch(initTasks(normalizedTables.tasks));
+          dispatch(initMessages(normalizedTables.messages));
           dispatch(initSearchResults([]));
           let u = normalizedTables.users.map(user => {
             user.colour = getNewColour(normalizedTables.users.map(k => k.colour))
@@ -723,7 +731,7 @@ export const declineProject = (projectId, notificationId) => (
         dispatch(_createProject({
           id: res.project_id,
           content: content,
-          creator: localStorage.getItem('user_id'),
+          creator: getLocalUserId(),
           basic: [],
           pending: [],
           milestones: [],
@@ -782,6 +790,7 @@ export const declineProject = (projectId, notificationId) => (
     let milestoneState = [];
     let taskState = [];
     let userState = [];
+    const messageState = [];
 
     projects.forEach(project => {
       // project table
@@ -806,6 +815,10 @@ export const declineProject = (projectId, notificationId) => (
         milestoneState.push(milestone)
       });
 
+      project.messages.forEach(message => {
+        messageState.push(message);
+      });
+
       project.tasks.forEach(task => {
         taskState.push(task)
         // append taskid to milestoneState
@@ -819,6 +832,7 @@ export const declineProject = (projectId, notificationId) => (
 
       currProj.milestones = milestoneState.map(milestone => milestone.id);
       currProj.tasks = taskState.map(task => task.id)
+      currProj.messages = messageState.map(message => message.id);
 
       // fill in user table and update project table
       project.users.forEach(user => {
@@ -836,7 +850,6 @@ export const declineProject = (projectId, notificationId) => (
         if (!isItemPresent(userState, user.id)) {
           userState.push(user);
         }
-
       });
 
       projectState.push(currProj);
@@ -844,8 +857,9 @@ export const declineProject = (projectId, notificationId) => (
     return {
       projects: projectState,
       milestones: milestoneState,
-      tasks:taskState,
-      users: userState
+      tasks: taskState,
+      users: userState,
+      messages: messageState,
     };
   }
 
@@ -1075,3 +1089,86 @@ export const declineProject = (projectId, notificationId) => (
       }(document, "script"));
     }
   }
+
+  export function createUserMessage(content, projectId, milestoneId) {
+    const message = {
+      pinned: false,
+      content,
+      author_id: getLocalUserId(),
+      project_id: projectId,
+      milestone_id: milestoneId || undefined, // force cast empty or null
+    };
+    return function(dispatch) {
+      serverCreateMessage(message).done(res => {
+        dispatch(addMessage(res));
+      }).fail(e => {
+        console.log(e);
+      });
+    };
+  }
+  export function pinMessage(messageId) {
+    return function(dispatch) {
+      dispatch(_pinMessage(messageId));
+      serverEditMessage(messageId, { pinned: true }).done(res => {
+        dispatch(snackbarMessage('Messsage pinned', 'default'))
+      }).fail(e => {
+        dispatch(_unpinMessage(messageId));
+        console.log(e);
+      });
+    };
+  }
+  export function unpinMessage(messageId) {
+    return function(dispatch) {
+      dispatch(_unpinMessage(messageId));
+      serverEditMessage(messageId, { pinned: false }).done(res => {
+        dispatch(snackbarMessage('Messsage unpinned', 'default'))
+      }).fail(e => {
+        dispatch(_pinMessage(messageId));
+        console.log(e);
+      });
+    };
+  }
+  export const editMessageContent = (messageId, content) => {
+    const message = {
+      content_updated_at: new Date().toISOString(),
+      content_updated_by: getLocalUserId(),
+      content,
+    };
+    return dispatch => {
+      serverEditMessage(messageId, message).done(() => {
+        dispatch(_editMessage(messageId, message));
+        dispatch(snackbarMessage('Messsage edited', 'default'));
+      }).fail(e => {
+        console.log(e);
+      });
+    };
+  };
+  export const markNotificationAsRead = (notificationId) => {
+    const notification = {
+      is_read: true,
+    };
+    return dispatch => {
+      serverEditNotification(notificationId, notification).done(() => {
+        dispatch(_editNotification(notificationId, { read: true }));
+      }).fail(e => {
+        console.log(e);
+      });
+    };
+  };
+  export function deleteMessage(messageId) {
+    return function(dispatch) {
+      serverDeleteMessage(messageId).done(res => {
+        dispatch(_deleteMessage(messageId));
+        dispatch(snackbarMessage('Messsage deleted', 'default'));
+      }).fail(e => {
+        console.log(e);
+      });
+    };
+  }
+  export const setSidebarVisibility = (isVisible) => (
+    (dispatch) => {
+      dispatch(_updateAppStatus({
+        showSidebar: isVisible,
+      }));
+    }
+  );

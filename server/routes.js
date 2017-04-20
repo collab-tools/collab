@@ -8,6 +8,7 @@ var Notification = require('./controller/notificationController');
 var Github = require('./controller/githubController')
 var WebHook = require('./controller/webhookController')
 var Newsfeed = require('./controller/newsfeedController')
+var Message = require('./controller/messageController')
 
 module.exports.endpoints = [
     { method: 'GET',  path: '/{param*}', config: Static.getPublic },
@@ -52,5 +53,9 @@ module.exports.endpoints = [
     { method: 'POST',  path: '/webhook/drive', config: WebHook.googleDriveWebhook },
 
     { method: 'POST',  path: '/newsfeed/{project_id}', config: Newsfeed.createPost },
-    { method: 'GET',  path: '/newsfeed', config: Newsfeed.getNewsfeed }
+    { method: 'GET',  path: '/newsfeed', config: Newsfeed.getNewsfeed },
+
+    { method: 'POST', path: '/messages', config: Message.createMessage },
+    { method: 'PUT', path: '/message/{message_id}', config: Message.updateMessage },
+    { method: 'DELETE', path: '/message/{message_id}', config: Message.deleteMessage },
 ];

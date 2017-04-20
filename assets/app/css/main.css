@@ -6,10 +6,10 @@ html, body{
   padding: auto;
   position:relative;
   height: 100%;
-  min-height: 100%;
-  min-width:1024px; /* suppose you want minimun width of 1000px */
-  width: auto !important;  /* Firefox will set width as auto */
-  width:1024px;             /* As IE ignores !important it will set width as 1000px; */
+  min-height: 100% !important;
+  min-width:1100px; /* suppose you want minimun width of 1000px */
+  width: auto !important; /* Firefox will set width as auto */
+  width:1100px; /* As IE ignores !important it will set width as 1000px; */
 }
 /*********************** TreeNode *******************/
 .borderless {
@@ -88,10 +88,6 @@ html, body{
   margin-bottom: 20px;
 }
 /********************* task table ************************/
-.main-content {
-  margin-top: 10px;
-  margin-left: 30px;
-}
 
 
 
@@ -103,27 +99,18 @@ html, body{
   /*margin-left: -40px;*/
   /*min-height: 40px;*/
   margin: 3px 10px 3px 10px;
-  font-size: 19px;
+  font-size: 15px;
 }
 .completed-task-row {
   color: #757575;
 }
 
-.task-content{
+.task-content, .completed-content{
   margin-left: 30px;
   display: inline-block;
   vertical-align: top;
-  line-height: 1.2;
 }
 
-.completed-content {
-  margin-left: 30px;
-  display: inline-block;
-  vertical-align: top;
-  line-height: 1.2;
-  text-decoration: line-through;
-
-}
 .task-checkbox {
   display: table;
   position: absolute;
@@ -138,7 +125,7 @@ html, body{
 
 .reopen-task, .edit-task, .delete-task {
   opacity: 0.5;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .reopen-task:hover, .edit-task:hover, .delete-task:hover {
@@ -351,21 +338,22 @@ html, body{
   display: inline-block;
 }
 .milestone-menu-view {
-  height: auto;
+  height: 100%;
   margin-top: 5px;
   margin-bottom: 5px;
   padding-bottom: 10px;
-  border-radius: 1px;
+}
+.milestone-message-view {
+  height: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .milestone-content-view {
   height: auto;
   margin-top: 5px;
-
   border-radius: 1px;
 }
-.milestone-row {
 
-}
 .milestone-row-header {
   margin-top: 20px;
   padding-left: 5px;
@@ -373,10 +361,18 @@ html, body{
 .milestone-title {
   display: block;
   word-break: break-all;
-  font-size: x-large;
+  font-size: large;
   font-weight: bold;
 }
-
+.milestone-row {
+}
+.milestone-row:hover {
+  background-color: rgba(0, 188, 212, 0.1);
+  cursor: pointer;
+}
+.assignee-row:hover {
+  background-color: rgba(0, 188, 212, 0.1);
+}
 /************************ Project header ***************************/
 
 #hangouts-btn-wrapper {
@@ -418,7 +414,7 @@ html, body{
   color: #aaaaaa;
   left: 50%;
   text-align: center;
-  margin-top: 150px;
+  margin-top: 100px;
 }
 
 .invisible {
@@ -447,12 +443,6 @@ html, body{
   color: white;
 }
 
-.left-panel {
-  background-color: #37474f;
-  color: white;
-  min-width: 204px;
-}
-
 .collab-logo {
   margin-left: 60px;
   font-size: large;
@@ -461,8 +451,14 @@ html, body{
 }
 
 .body-wrapper {
-  width: 95%;
+  width: 99%;
+  height: 80%;
   margin-top: 70px;
+}
+.main-content {
+  height: 100%;
+  margin-top: 10px;
+  margin-left: 30px;
 }
 
 .my-step-container {
@@ -513,7 +509,18 @@ html, body{
   margin-left: 43px;
 }
 
+.full-height {
+  height: 100%;
+}
 /************************ Settings **************************/
 .settings-btn {
   margin-left: 20px;
+}
+
+.messageModalInput {
+  min-height: 150px;
+  max-height: 150px;
+  height: 150px;
+  overflow-y: auto;
+  background-color: white;
 }

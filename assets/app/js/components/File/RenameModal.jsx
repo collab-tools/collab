@@ -21,6 +21,9 @@ class RenameModal extends Component {
     this.enableButton = this.enableButton.bind(this);
     this.disableButton = this.disableButton.bind(this);
   }
+  componentDidMount() {
+    this.textInput.focus();
+  }
   onDialogSubmit() {
     this.props.onDialogSubmit(this.textInput.getValue().trim());
     this.props.handleClose();
@@ -67,13 +70,14 @@ class RenameModal extends Component {
           onValidSubmit={this.onDialogSubmit}
         >
           <FormsyText
+            autoComplete="off"
             autoFocus
             required
             fullWidth
             value={inputValue}
             name="File Name"
             floatingLabelText="New File Name (required)"
-            ref={(input) => { this.textInput = input; }}
+            ref={input => { this.textInput = input; }}
           />
         </Form>
       </Dialog>

@@ -195,7 +195,6 @@ class FilesList extends Component {
   renderRenameModal() {
     return (this.state.isRenameModalOpen &&
       <RenameModal
-        open={this.state.isRenameModalOpen}
         handleClose={this.handleRenameModalClose}
         onDialogSubmit={this.renameFile.bind(this, this.state.targetFile.id)}
         inputValue={this.state.targetFile.name}
@@ -285,7 +284,7 @@ class FilesList extends Component {
     const lastModified = `Modified ${toFuzzyTime(file.modifiedTime)} by ${lastModifyingUser}`;
 
     return (
-      <tr  className="table-row-file" key={file.id}>
+      <tr className="table-row-file" key={file.id}>
         <td onClick={this.navigate.bind(this, file.id)}>
           <CardHeader
             style={{ padding: 5, height: 'inherit' }}

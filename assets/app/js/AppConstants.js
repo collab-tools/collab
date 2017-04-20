@@ -20,6 +20,7 @@ export const PATH = {
   files: 'files',
   newsfeed: 'newsfeed',
   settings: 'settings',
+  discussions: 'discussions',
 };
 export const GITHUB_CLIENT_ID = clientConfig.github_client_id;
 export const GOOGLE_CLIENT_ID = clientConfig.google_client_id;
@@ -47,6 +48,7 @@ export const INSERT_FILE = 'INSERT_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const DELETE_NOTIFICATION = 'DELETE_NOTIFICATION';
 export const NEW_NOTIFICATION = 'NEW_NOTIFICATION';
+export const EDIT_NOTIFICATION = 'EDIT_NOTIFICATION';
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 export const REPLACE_PROJECT_ID = 'REPLACE_PROJECT_ID';
@@ -85,9 +87,13 @@ export const INIT_PROJECTS = 'INIT_PROJECTS';
 export const INIT_TASKS = 'INIT_TASKS';
 export const INIT_USERS = 'INIT_USERS';
 export const INIT_FILES = 'INIT_FILES';
-export const INIT_MESSAGES = 'INIT_MESSAGES';
-export const ADD_MESSAGE = 'ADD_MESSAGE';
-export const DELETE_MESSAGE = 'DELETE_MESSAGE';
 export const REPLACE_MESSAGE_ID = 'REPLACE_MESSAGE_ID';
 export const QUERY_PROCESSING = 'QUERY_PROCESSING';
 export const QUERY_DONE = 'QUERY_DONE';
+export const INIT_MESSAGES = 'INIT_MESSAGES';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const PIN_MESSAGE = 'PIN_MESSAGE';
+export const UNPIN_MESSAGE = 'UNPIN_MESSAGE';
+export const EDIT_MESSAGE = 'EDIT_MESSAGE';
+export const EDIT_MESSAGE_CONTENT = 'EDIT_MESSAGE_CONTENT';
+export const DELETE_MESSAGE = 'DELETE_MESSAGE';
