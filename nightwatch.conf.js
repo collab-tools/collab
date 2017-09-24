@@ -1,3 +1,5 @@
+const binaryPath = require('puppeteer').executablePath();
+
 module.exports = {
   src_folders: ['assets/app/teste2e/'],
   output_folder: 'reports',
@@ -22,7 +24,7 @@ module.exports = {
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
-          binary: './node_modules/puppeteer/.local-chromium/linux-499413/chrome-linux/chrome',
+          binary: binaryPath,
           args: [
             '--no-sandbox',
             '--headless',
