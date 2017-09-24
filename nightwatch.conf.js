@@ -21,6 +21,12 @@ module.exports = {
       javascriptEnabled: true,
       acceptSslCerts: true,
       trustAllSSLCerficates: true,
+      screenshots: {
+        enabled: true,
+        path: './screenshots/',
+        on_failure: true,
+        on_error: true,
+      },
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
