@@ -1,11 +1,11 @@
 const binaryPath = require('puppeteer').executablePath();
 
 module.exports = {
-  src_folders: ['assets/app/teste2e/'],
+  src_folders: ['assets/app/test_e2e/tests/'],
   output_folder: 'reports',
   custom_commands_path: '',
   custom_assertions_path: '',
-  page_objects_path: '',
+  page_objects_path: 'assets/app/test_e2e/page_objects/',
   globals_path: './globals.js',
 
   selenium: {
@@ -17,7 +17,7 @@ module.exports = {
       default_path_prefix: '',
       selenium_port: 9515,
       selenium_host: '127.0.0.1',
-      launch_url: 'http://localhost',
+      launch_url: 'http://localhost:8080',
       javascriptEnabled: true,
       acceptSslCerts: true,
       trustAllSSLCerficates: true,

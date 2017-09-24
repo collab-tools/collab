@@ -3,7 +3,7 @@ module.exports = {
   'Demo test Google' : function (client) {
     client
       .url('http://google.no')
-      .pause(1000);
+      .pause(2000);
 
     client.expect.element('body').to.be.present;
 
