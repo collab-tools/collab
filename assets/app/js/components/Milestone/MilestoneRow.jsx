@@ -375,7 +375,12 @@ class MilestoneRow extends Component {
     }
     return (
       <Paper zDepth={0} style={listStyle} >
-        <Grid fluid className="milestone-row" onClick={this.onSelect}>
+        <Grid
+          fluid
+          id={`milestone-${milestone.content.replace(/\s/g, '')}`}
+          className="milestone-row"
+          onClick={this.onSelect}
+        >
           <div>
             {editIndicator}
             <div className="milestone-row-header">
