@@ -11,12 +11,7 @@ module.exports = {
   },
   'Add project': (client) => {
     const homepage = client.page.app();
-    homepage.expect.element('@addProjectBtn').to.be.visible;
-    homepage.click('@addProjectBtn').api.pause(200);
-    homepage.expect.element('@projectNameInput').to.be.visible;
-    homepage.setValue('@projectNameInput', projectName);
-    homepage.click('@addProjectSubmitBtn').api.pause(1000);
-    homepage.expect.element(`#project-${projectName}`).to.be.visible;
+    homepage.addProject(projectName);
     client.end();
   },
   'View project': (client) => {
