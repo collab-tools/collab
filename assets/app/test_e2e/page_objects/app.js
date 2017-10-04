@@ -11,8 +11,19 @@ function addProject(projectName) {
   return this;
 }
 
+function addMilestone(milestoneName, milestoneDate) {
+  this.click('@addMilestoneBtn').api.pause(500);
+  this.expect.element('@addMilestoneNameInput').to.be.visible;
+  this.setValue('@addMilestoneNameInput', milestoneName);
+  this.setValue('@addMilestoneDatepicker', milestoneDate);
+  this.click('@addMilestoneSubmitBtn').api.pause(500);
+  this.expect.element(`#milestone-${milestoneName}`).to.be.visible;
+  return this;
+}
+
 const projectCommands = {
   addProject,
+  addMilestone,
 };
 
 module.exports = {
@@ -41,5 +52,12 @@ module.exports = {
     addMilestoneNameInput: '.add-milestone-name-input > input',
     addMilestoneDatepicker: '.add-milestone-datepicker input',
     addMilestoneSubmitBtn: '.add-milestone-modal-actions > button:nth-child(2)',
+
+    // Tasks
+    addTaskBtn: '.add-task-btn',
+    addTaskSubmitBtn: '.add-task-submit-btn',
+    addTaskNameInput: '.add-task-name-input textarea[name="Task name"]',
+    addTaskMilestoneSelect: '.add-task-milestone-select',
+    addTaskAssigneeSelect: '.add-task-assignee-select',
   },
 };

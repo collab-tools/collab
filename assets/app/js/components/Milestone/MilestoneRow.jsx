@@ -330,6 +330,7 @@ class MilestoneRow extends Component {
     return (
       <span style={{marginTop: -10}} className="pull-right">
         <IconButton
+          className="add-task-btn"
           tooltip="new task"
           tooltipPosition="bottom-center"
           onClick={this.openTaskModal}

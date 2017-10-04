@@ -15,14 +15,7 @@ module.exports = {
     const homepage = client.page.app();
     homepage.addProject(projectName);
     homepage.click(`#project-${projectName}`).api.pause(500);
-    homepage.click('@addMilestoneBtn').api.pause(500);
-    homepage.expect.element('@addMilestoneNameInput').to.be.visible;
-    homepage.setValue('@addMilestoneNameInput', milestoneName);
-    homepage.setValue('@addMilestoneDatepicker', milestoneDate);
-    homepage.click('@addMilestoneSubmitBtn').api.pause(500);
-
-    // Milestones list shows a new row
-    homepage.expect.element(`#milestone-${milestoneName}`).to.be.visible;
+    homepage.addMilestone(milestoneName, milestoneDate);
 
     // Snackbar message is displayed
     homepage.waitForElementVisible('@systemSnackbar', 2000);
@@ -31,7 +24,7 @@ module.exports = {
   },
   'Edit milestone': (client) => {
     const homepage = client.page.app();
-    homepage.waitForElementPresent(`#project-${projectName}`, 2000);
+    homepage.waitForElementPresent(`#project-${projectName}`, 5000);
     homepage.click(`#project-${projectName}`).api.pause(500);
     homepage.expect.element(`#milestone-${milestoneName} .milestone-title > span`).to.be.visible;
     homepage.moveToElement(`#milestone-${milestoneName} .milestone-title > span`, 3, 3);
