@@ -28,4 +28,16 @@ module.exports = {
     homepage.expect.element('@systemSnackbar').text.to.equal('Task added');
     client.end();
   },
+  'Complete task': (client) => {
+    const homepage = client.page.app();
+    homepage.waitForElementPresent(`#project-${projectName}`, 5000);
+    homepage.click(`#project-${projectName}`).api.pause(500);
+    homepage.waitForElementVisible(`#milestone-${milestoneName}`, 2000);
+
+    homepage.waitForElementVisible(`#milestone-${milestoneName} .task-row .task-checkbox`, 2000);
+    homepage.click(`#milestone-${milestoneName} .task-row .task-checkbox`);
+    homepage.expect.element(`#milestone-${milestoneName} .task-row .task-checkbox`)
+      .to.not.be.present;
+    client.end();
+  },
 };
