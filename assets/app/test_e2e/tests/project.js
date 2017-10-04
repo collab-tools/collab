@@ -17,7 +17,7 @@ module.exports = {
   'View project': (client) => {
     const homepage = client.page.app();
     const sidebarProjectBtnSelector = `#project-${projectName}`;
-    homepage.expect.element(sidebarProjectBtnSelector).to.be.visible;
+    homepage.waitForElementPresent(sidebarProjectBtnSelector, 2000);
     homepage.click(sidebarProjectBtnSelector).api.pause(1000);
     homepage.expect.element('@milestonesTab').to.be.visible;
     homepage.expect.element('@emptyMilestonesMessage').to.be.visible;
@@ -26,13 +26,13 @@ module.exports = {
   'Rename project': (client) => {
     const homepage = client.page.app();
     const sidebarProjectBtnSelector = `#project-${projectName}`;
-    homepage.expect.element(sidebarProjectBtnSelector).to.be.visible;
+    homepage.waitForElementPresent(sidebarProjectBtnSelector, 2000);
     homepage.click(sidebarProjectBtnSelector).api.pause(1000);
     homepage.click('@settingsTab').api.pause(1000);
     homepage.expect.element('@renameProjectInput').to.be.visible;
     homepage.setValue('@renameProjectInput', newProjectName);
     homepage.click('@renameProjectBtn').api.pause(1000);
-    homepage.expect.element(`#project-${newProjectName}`).to.be.visible;
+    homepage.expect.element(`#project-${newProjectName}`).to.be.present;
     client.end();
   },
 };

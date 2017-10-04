@@ -31,7 +31,7 @@ module.exports = {
   },
   'Edit milestone': (client) => {
     const homepage = client.page.app();
-    homepage.waitForElementVisible(`#project-${projectName}`, 2000);
+    homepage.waitForElementPresent(`#project-${projectName}`, 2000);
     homepage.click(`#project-${projectName}`).api.pause(500);
     homepage.expect.element(`#milestone-${milestoneName} .milestone-title > span`).to.be.visible;
     homepage.moveToElement(`#milestone-${milestoneName} .milestone-title > span`, 3, 3);
