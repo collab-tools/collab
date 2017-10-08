@@ -26,10 +26,11 @@ module.exports = {
     const homepage = client.page.app();
     homepage.waitForElementPresent(`#project-${projectName}`, 5000);
     homepage.click(`#project-${projectName}`).api.pause(500);
-    homepage.expect.element(`#milestone-${milestoneName} .milestone-title > span`).to.be.visible;
+    homepage.waitForElementVisible(`#milestone-${milestoneName} .milestone-title > span`, 5000);
     homepage.moveToElement(`#milestone-${milestoneName} .milestone-title > span`, 3, 3);
     homepage.api.pause(100);
-    homepage.click(`#milestone-${milestoneName} .milestone-actions .edit-task`).api.pause(500);
+    homepage.click(`#milestone-${milestoneName} .milestone-actions .edit-task`);
+    homepage.waitForElementVisible('@addMilestoneNameInput', 2000);
     homepage.setValue('@addMilestoneNameInput', newMilestoneName);
     homepage.click('@addMilestoneSubmitBtn');
 
