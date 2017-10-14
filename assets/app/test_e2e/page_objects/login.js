@@ -6,6 +6,11 @@ function login() {
   const CLIENT_ID = config.get('google.client_id');
   const CLIENT_SECRET = config.get('google.client_secret');
   const PRIVATE_KEY = config.get('authentication.privateKey');
+  // TODO: figure out a way to get this ID dynamically
+  const USER_ID = 'VJ0ZFPgi7';
+  const EMAIL = config.get('integration_test_account.email');
+  const DISPLAY_IMAGE = config.get('integration_test_account.display_image');
+
   const options = {
     url: 'https://www.googleapis.com/oauth2/v4/token',
     form: {
@@ -26,16 +31,20 @@ function login() {
       }
       const parsedBody = JSON.parse(body);
       accessToken = parsedBody.access_token;
-      expiresIn = parsedBody.expires_in;
+      expiresIn = (parsedBody.expires_in * 1000) + new Date().getTime();
       jwtToken = authController.get_token(PRIVATE_KEY, 'VJ0ZFPgi7', expiresIn);
       client
         .url('http://localhost:8080/')
-        .execute(function(accessToken, expiresIn, jwtToken) {
+        .execute(function(accessToken, expiresIn, jwtToken, userId, displayImage, email) {
           window.localStorage.setItem('google_token', accessToken);
-          window.localStorage.setItem('expiry_date', expiresIn * 1000 + new Date().getTime());
+          window.localStorage.setItem('expiry_date', expiresIn);
           window.localStorage.setItem('jwt', jwtToken);
+          window.localStorage.setItem('user_id', userId);
+          window.localStorage.setItem('display_name', 'NUSCollab TestAccount');
+          window.localStorage.setItem('display_image', displayImage);
+          window.localStorage.setItem('email', email);
           return true;
-        }, [accessToken, expiresIn, jwtToken], function(result) {
+        }, [accessToken, expiresIn, jwtToken, USER_ID, DISPLAY_IMAGE, EMAIL], function(result) {
           this.assert.ok(result.value, 'Localstorage updated with access tokens.');
         })
         .execute(function() {
@@ -43,10 +52,12 @@ function login() {
             window.localStorage.getItem('google_token'),
             window.localStorage.getItem('expiry_date'),
             window.localStorage.getItem('jwt'),
+            window.localStorage.getItem('user_id'),
           ];
         }, [], function(result) {
-          this.waitForElementVisible('.btn.btn-social.btn-google', 10000);
-          this.refresh();
+          this.pause(1000);
+          this.url('http://localhost:8080/app/dashboard');
+          // this.refresh();
           this.waitForElementVisible('#task-panel', 10000);
           this.assert.visible('#task-panel', 'User is logged in');
           done();

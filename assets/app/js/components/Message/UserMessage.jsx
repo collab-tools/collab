@@ -109,7 +109,7 @@ class UserMessage extends Component {
   renderMainContent() {
     const { message } = this.props;
     return (
-      <div style={styles.content}>
+      <div className="message-content" style={styles.content}>
         <ReactMarkdown
           source={message.content}
           escapeHtml
@@ -141,6 +141,7 @@ class UserMessage extends Component {
     const { message, pinned } = this.props;
     return (
       <Row
+        className="message-row"
         style={assign({}, styles.container, message.pinned && {
           borderLeft: '2px solid rgb(254, 209, 45)',
         }, pinned && {

@@ -59,5 +59,16 @@ module.exports = {
     addTaskNameInput: '.add-task-name-input textarea[name="Task name"]',
     addTaskMilestoneSelect: '.add-task-milestone-select',
     addTaskAssigneeSelect: '.add-task-assignee-select',
+
+    // Messages
+    discussionsContainer: '.discussions-container',
+    messageInputTrigger: '.message-input-trigger > input',
+    addMessageInput: '.add-message-input',
+    addMessageSubmitBtn: '.add-message-submit-btn',
+    addMessageCancelBtn: '.add-message-cancel-btn',
+    messageList: '.message-list',
+    messageListToggleBtn: '.message-list-toggle-btn',
+    messageActivityToggleBtn: '.message-activity-toggle-btn',
+    lastMessage: '.message-list .message-row:last-child',
   },
 };
