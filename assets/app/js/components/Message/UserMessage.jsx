@@ -89,7 +89,7 @@ class UserMessage extends Component {
           <IconButton
             style={styles.iconButton}
             iconStyle={styles.icon}
-            iconClassName="material-icons"
+            iconClassName="message-options-btn material-icons"
             tooltipPosition="bottom-left"
           >
             keyboard_arrow_down
@@ -99,10 +99,10 @@ class UserMessage extends Component {
         targetOrigin={{ horizontal: 'left', vertical: 'top' }}
       >
         {this.props.message.pinned
-          ? <MenuItem onTouchTap={this.unpinMessage} primaryText="Unpin from Top" />
-          : <MenuItem onTouchTap={this.pinMessage} primaryText="Pin to Top" />}
-        <MenuItem onTouchTap={this.enterEditMode} primaryText="Edit" />
-        <MenuItem onTouchTap={this.deleteMessage} primaryText="Delete" />
+          ? <MenuItem className="unpin-message-btn" onClick={this.unpinMessage} primaryText="Unpin from Top" />
+          : <MenuItem className="pin-message-btn" onClick={this.pinMessage} primaryText="Pin to Top" />}
+        <MenuItem className="edit-message-btn" onClick={this.enterEditMode} primaryText="Edit" />
+        <MenuItem className="delete-message-btn" onClick={this.deleteMessage} primaryText="Delete" />
       </IconMenu>
     );
   }

@@ -70,5 +70,9 @@ module.exports = {
     messageListToggleBtn: '.message-list-toggle-btn',
     messageActivityToggleBtn: '.message-activity-toggle-btn',
     lastMessage: '.message-list .message-row:last-child',
+    pinMessageBtn: '.pin-message-btn',
+    unpinMessageBtn: '.unpin-message-btn',
+    editMessageBtn: '.edit-message-btn',
+    deleteMessageBtn: '.delete-message-btn',
   },
 };
