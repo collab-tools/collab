@@ -51,4 +51,40 @@ module.exports = {
     homepage.expect.element('@systemSnackbar').text.to.equal('Message edited');
     client.end();
   },
+  'Pin/unpin message': (client) => {
+    // Edits the last message
+    const homepage = client.page.app();
+    homepage.waitForElementPresent(`#project-${projectName}`, 5000);
+    homepage.click(`#project-${projectName}`).api.pause(500);
+    homepage.click('@discussionsTab');
+    homepage.waitForElementVisible('@discussionsContainer', 2000);
+    homepage.expect.element('@pinnedMessage').to.not.be.present;
+
+    // Expand message options, click "pin" button
+    homepage.click('.message-list .message-row:last-child .message-options-btn');
+    homepage.waitForElementVisible('@pinMessageBtn', 2000);
+    homepage.click('@pinMessageBtn');
+    homepage.waitForElementVisible('@pinnedMessage', 2000);
+
+    // Snackbar displays "Message pinned"
+    homepage.waitForElementVisible('@systemSnackbar', 2000);
+    homepage.expect.element('@systemSnackbar').text.to.equal('Message pinned');
+
+    // Wait for snackbar message to close
+    homepage.waitForElementNotVisible('@systemSnackbar', 5000);
+
+    // Expand message options, click "unpin" button
+    homepage.click('.message-list .message-row:last-child .message-options-btn');
+    homepage.waitForElementVisible('@unpinMessageBtn', 2000);
+    homepage.click('@unpinMessageBtn');
+
+    // Snackbar displays "Message unpinned"
+    homepage.waitForElementVisible('@systemSnackbar', 2000);
+    homepage.expect.element('@systemSnackbar').text.to.equal('Message unpinned');
+
+    // Assert that there are no more pinned messages
+    homepage.api.pause(500);
+    homepage.expect.element('@pinnedMessage').to.not.be.present;
+    client.end();
+  },
 };

@@ -139,9 +139,10 @@ class UserMessage extends Component {
   }
   render() {
     const { message, pinned } = this.props;
+    const className = pinned ? 'pinned message-row' : 'message-row';
     return (
       <Row
-        className="message-row"
+        className={className}
         style={assign({}, styles.container, message.pinned && {
           borderLeft: '2px solid rgb(254, 209, 45)',
         }, pinned && {
