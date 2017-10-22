@@ -15,5 +15,11 @@
   },
   "google": {
     "client_secret": ""
+  },
+  "integration_test_account": {
+      "user_id": "TEST_USER_ID",
+      "refresh_token": "TEST_REFRESH_TOKEN",
+      "email": "TEST_EMAIL",
+      "display_image": "TEST_DISPLAY_IMAGE"
   }
 }

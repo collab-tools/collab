@@ -6,8 +6,7 @@ function login() {
   const CLIENT_ID = config.get('google.client_id');
   const CLIENT_SECRET = config.get('google.client_secret');
   const PRIVATE_KEY = config.get('authentication.privateKey');
-  // TODO: figure out a way to get this ID dynamically
-  const USER_ID = 'VJ0ZFPgi7';
+  const USER_ID = config.get('integration_test_account.user_id');
   const EMAIL = config.get('integration_test_account.email');
   const DISPLAY_IMAGE = config.get('integration_test_account.display_image');
 
@@ -32,7 +31,7 @@ function login() {
       const parsedBody = JSON.parse(body);
       accessToken = parsedBody.access_token;
       expiresIn = (parsedBody.expires_in * 1000) + new Date().getTime();
-      jwtToken = authController.get_token(PRIVATE_KEY, 'VJ0ZFPgi7', expiresIn);
+      jwtToken = authController.get_token(PRIVATE_KEY, USER_ID, expiresIn);
       client
         .url('http://localhost:8080/')
         .execute(function(accessToken, expiresIn, jwtToken, userId, displayImage, email) {

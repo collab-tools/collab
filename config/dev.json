@@ -49,6 +49,7 @@
     "github_client_id": "d541a87c15b974bf55a7"
   },
   "integration_test_account": {
+      "user_id": "VJ0ZFPgi7",
       "refresh_token": "",
       "email": "",
       "display_image": ""
