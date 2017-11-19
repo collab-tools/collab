@@ -19,7 +19,7 @@ plan.remote((remote) => {
   remote.sudo(`cd ${plan.runtime.options.dir} && git fetch --all`);
 
   remote.log(`Checking out ${plan.runtime.options.branch}`);
-  remote.sudo(`cd ${plan.runtime.options.dir} && git checkout origin/${plan.runtime.options.branch}`);
+  remote.sudo(`cd ${plan.runtime.options.dir} && git checkout ${plan.runtime.options.branch}`);
 
   remote.log('Installing dependencies');
   remote.sudo(`cd ${plan.runtime.options.dir} && npm install`);
