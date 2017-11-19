@@ -29,6 +29,7 @@ beforeEach((done) => {
       .then(() => sequelize.query('truncate table newsfeeds', options))
       .then(() => sequelize.query('truncate table tasks', options))
       .then(() => sequelize.query('truncate table notifications', options))
+      .then(() => sequelize.query('truncate table messages', options))
       .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1', options));
   }).then(() => {
     done();
