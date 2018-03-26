@@ -9,6 +9,7 @@ const getNewsfeeds = (state) => state.newsfeed;
 const getUsers = (state) => state.users;
 const getMessages = (state) => state.messages;
 const getProjects = (state) => state.projects;
+const getCommits = (state) => state.commits;
 
 export const getCurrentProject = createSelector(
   [getProjects, getProjectId],
@@ -17,6 +18,16 @@ export const getCurrentProject = createSelector(
       return projects.filter(project => project.id === projectId)[0];
     }
     return null;
+  }
+);
+
+export const getProjectCommits = createSelector(
+  [getCommits, getProjectId],
+  (commits, projectId) => {
+    let projectCommits = {};
+    if (commits)
+     projectCommits = commits.filter(commit => commit.project_id === projectId);
+  return projectCommits;
   }
 );
 
