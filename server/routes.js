@@ -47,10 +47,11 @@ module.exports.endpoints = [
 
     { method: 'POST',  path: '/github/oauth/access_token', config: Github.getAccessToken },
     { method: 'POST',  path: '/github/sync/{project_id}', config: Github.sync },
-
+    { method: 'GET',  path: '/github/{owner}/{name}/commits', config: Github.getRepoCommits}, //new
+ 
     { method: 'POST',  path: '/webhook/github/setup', config: WebHook.setupGithubWebhook },
-    { method: 'POST',  path: '/webhook/github', config: WebHook.githubWebhook },
-    { method: 'POST',  path: '/webhook/drive', config: WebHook.googleDriveWebhook },
+    { method: 'POST',  path: '/webhook/github', config: WebHook.githubWebhook }, //github webhook handler
+    { method: 'POST',  path: '/webhook/drive', config: WebHook.googleDriveWebhook }, //google drive webhook handler
 
     { method: 'POST',  path: '/newsfeed/{project_id}', config: Newsfeed.createPost },
     { method: 'GET',  path: '/newsfeed', config: Newsfeed.getNewsfeed },

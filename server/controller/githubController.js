@@ -14,6 +14,7 @@ var Sequelize = require('sequelize');
 var Promise = require("bluebird");
 var req = require("request")
 var analytics = require('collab-analytics')(config.database, config.logging_database);
+var socket = require('./socket/handlers');
 
 module.exports = {
     getAccessToken: {
@@ -40,11 +41,16 @@ module.exports = {
             }
         }
     },
+    getRepoCommits: {
+        handler: getRepoCommits,
+    },
     createGithubIssue: createGithubIssue,
     updateGithubIssue: updateGithubIssue,
     createGithubMilestone: createGithubMilestone,
     updateGithubMilestone: updateGithubMilestone,
-    deleteGithubMilestone: deleteGithubMilestone
+    deleteGithubMilestone: deleteGithubMilestone,
+    addGithubMilestonesToDB: addGithubMilestonesToDB,
+    addGithubIssuesToDB: addGithubIssuesToDB,
 };
 
 function addCollabMilestonesToGithub(owner, repo, token, projectId) {
@@ -410,3 +416,64 @@ function getAccessToken(request, reply) {
         reply(res)
     })
 }
+
+function getRepoCommits(request, reply) {
+    var repoOwner = request.params.owner;
+    var repoName = request.params.name; //need to fetch: 1. no. of commits, 2. no of contributors for new github tab
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + repoOwner + '/' + repoName + '/contributors?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + 'a86d8317a7b2b2db106af8aaef942052e6022482'
+        }
+    }
+    //console.log(request);
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                console.log("repocommits api error");
+                return reject(err)
+            }
+            console.log("token: " + " a86d8317a7b2b2db106af8aaef942052e6022482");
+            console.log("owner :" + request.params.owner);
+            console.log("name: " + request.params.name);
+            //console.log("projectID: " + request.payload.project_id);
+            console.log("githubcontroller getRepocommits");
+            var commitPayload = JSON.parse(body)
+            console.log(commitPayload);
+            if (commitPayload.length > 0) {
+                console.log("githubcontroller getRepocommits passed the if");
+                //var projectId = storage.getProjectsWithCondition({ github_repo_name: repoName, github_repo_owner: repoOwner })
+                var projectId = 'EkpGw0oFE';
+                //addGithubCommitsToDB(commitPayload, projectId).done(function (commits) {
+                    socket.sendMessageToProject(projectId, 'get_commits', commitPayload);
+                    //reply(m);
+                    console.log("commits received at client side and sent to app-side")
+                    return resolve(commitPayload)
+                //})
+            } else {
+                return resolve(true)
+            }
+        })
+    })
+}
+
+//new
+function addGithubCommitsToDB(commits, projectId) {
+    console.log("addGithubCommitsToDB");
+    var promises = []
+    commits.forEach(function (commit) {
+        console.log("commit payload @ addGithubCommitsToDB")
+        console.log(commit);
+        var commit = {
+            contributions: commit.contributions,
+            contributors: 1,
+            project_id: projectId,
+        }
+        console.log("addGithubCommitsToDB: contributions: " + commit.contributions);
+        console.log("addGithubCommitsToDB: contributors: " + commit.contributors);
+        console.log("addGithubCommitsToDB: project_id: " + commit.project_id);
+        promises.push(storage.findOrCreateCommit(commit))
+    })
+    return Sequelize.Promise.all(promises)
+} 
