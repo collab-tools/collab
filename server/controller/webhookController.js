@@ -67,7 +67,9 @@ function setupGithubWebhook(request, reply) {
         "active": true,
         "events": [
             "create",
-            "push"
+            "push",
+            "issues",
+            "milestone"
         ],
         "config": {
             "url": HOSTNAME + "/webhook/github",
@@ -96,6 +98,9 @@ function githubWebhookHandler(request, reply) {
     var repoOwner = payload.repository.owner.name
     if (!repoOwner) repoOwner = payload.repository.owner.login
 
+    //console.log("---- start of payload ----")
+    //console.log(request.payload) 
+    //console.log("---- end of payload ----")
     var promise = storage.getUsersWithCondition({github_login: githubUser})
 
     storage.getProjectsWithCondition({
@@ -117,29 +122,57 @@ function githubWebhookHandler(request, reply) {
                         // commits.forEach(function(commit) {
                         //   analytics.github.logCommit(project.id, commit);
                         // });
-                        Newsfeed.updateNewsfeed(
-                            {commitSize: commits.length, user_id: userId},
-                            templates.GITHUB_PUSH, project.id, constants.GITHUB,  new Date().toISOString())
+                        //Newsfeed.updateNewsfeed(
+                        //    {commitSize: commits.length, user_id: userId},
+                        //    templates.GITHUB_PUSH, project.id, constants.GITHUB,  new Date().toISOString())
                     }
-
+                    console.log('commit pushed - webhookcontroller')
                 } else if (event === 'create') {
                     // Any time a Branch or Tag is created..
                     var ref = payload.ref
                     var ref_type = payload.ref_type // either branch or tag
+                    //Newsfeed.updateNewsfeed(
+                    //    {ref_type: ref_type, ref: ref, user_id: userId},
+                    //    templates.GITHUB_CREATE, project.id, constants.GITHUB,  new Date().toISOString())
+                    socket.sendMessageToProject(project.id, 'newsfeed_post', newsfeed)
+                } else if (event == 'milestone') {
+                    // Any time a Milestone is created, closed, opened, edited, or deleted.
+                    var action = payload.action
+                    var milestone = {
+                        content: payload.milestone.title,
+                        deadline: payload.due_on,
+                        project_id: project.id
+                    }
+                    console.log(action)
+                    console.log(milestone)
+                    console.log("milestone pushed - webhookcontroller")
+                    if (action === 'created') {
+                        console.log("updating newsfeed and adding github milestone to collab")
+                        //Milestone.createMilestone(payload, reply) //broken
+                        socket.sendMessageToProject(project.id, 'new_milestone', milestone)
+                        //Github.addGithubMilestonesToDB(milestone, project.id)
+                    } else if (action === 'closed') {
+                        console.log("updating newsfeed and closing github milestone to collab")
+                        socket.sendMessageToProject(project.id, 'update_milestone', milestone)
+                    } else if (action === 'opened') {
+                        console.log("updating newsfeed and opening github milestone to collab")
+                        socket.sendMessageToProject(project.id, 'update_milestone', milestone)
+                    } else if (action === 'edited') {
+                        console.log("updating newsfeed and updating github milestone to collab")
+                        socket.sendMessageToProject(project.id, 'update_milestone', milestone)
+                    } else if (action === 'deleted') {
+                        console.log("updating newsfeed and deleting github milestone to collab")
+                        socket.sendMessageToProject(project.id, 'delete_milestone', milestone)
+                    }
                     Newsfeed.updateNewsfeed(
-                        {ref_type: ref_type, ref: ref, user_id: userId},
-                        templates.GITHUB_CREATE, project.id, constants.GITHUB,  new Date().toISOString())
-                } else if (event === 'release') {
-                  var release = payload.release;
-                  if (release !== null && release !== undefined) {
-                    analytics.github.logRelease(project.id, release);
-                  }
+                        {action: action, milestone: milestone, user_id: userId},
+                        templates.GITHUB_MILESTONE, project.id, constants.GITHUB,  new Date().toISOString())
                 }
 
             })
         })
     })
-}
+} 
 
 function driveWebhookHandler(request, reply) {
     var changes = request.payload.changes
