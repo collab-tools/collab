@@ -11,7 +11,7 @@ import { serverCreateTask, serverDeleteTask, serverUpdateGithubLogin, serverMark
   syncGithubIssues, serverEditTask, serverEditMilestone, queryGithub, setupGithubWebhook,
   queryGoogleDrive, serverDeclineProject, uploadFile, removeFile, renameFile, copyFile,
   createFolder, moveFile, serverCreateMessage, serverEditMessage, serverDeleteMessage,
-  serverGetNewesfeed, refreshTokens, listRepoEvents } from '../utils/apiUtil';
+  serverGetNewesfeed, refreshTokens, listRepoEvents, getRepoCommits } from '../utils/apiUtil';
 import { filterUnique, getCurrentProject, getNewColour, getLocalUserId } from '../utils/general';
 import { userIsOnline } from './SocketActions';
 import { logout } from '../utils/auth';
@@ -55,6 +55,7 @@ export const _unmarkDone = makeActionCreator(AppConstants.UNMARK_DONE, 'id');
 export const _createMilestone = makeActionCreator(AppConstants.CREATE_MILESTONE, 'milestone');
 export const _deleteMilestone = makeActionCreator(AppConstants.DELETE_MILESTONE, 'id');
 export const _editMilestone = makeActionCreator(AppConstants.EDIT_MILESTONE, 'id', 'milestone');
+export const _getCommits = makeActionCreator(AppConstants.GET_COMMITS, 'commits'); //new
 
 export const _createProject = makeActionCreator(AppConstants.CREATE_PROJECT, 'project');
 export const _deleteProject = makeActionCreator(AppConstants.DELETE_PROJECT, 'id');
@@ -163,6 +164,16 @@ export const renameFileToDrive = (fileId, newName) => (
         dispatch(deleteFile(fileId));
         dispatch(insertFile(newFile));
         dispatch(snackbarMessage(`${newFile.name} renamed successfully`, 'default'));
+                //const payload = {
+        //        user_id: getLocalUserId(),
+        //        fileName: newName,
+                //newName: newName,
+        //};
+        //serverCreatePost({
+        //    template: templates.DRIVE_RENAME,
+        //    data: JSON.stringify(payload),
+        //    source: ServerConstants.GOOGLE_DRIVE,
+        //  }, projectId);
       }, (err) => { console.log(err); }
     );
   }
@@ -174,6 +185,15 @@ export const copyFileToDrive = (fileId) => (
       (newFile) => {
         dispatch(insertFile(newFile));
         dispatch(snackbarMessage(`${newFile.name} copied successfully`, 'default'));
+        const payload = {
+          user_id: getLocalUserId(),
+          fileName: fileName,
+  };
+  serverCreatePost({
+      template: templates.DRIVE_COPY,
+      data: JSON.stringify(payload),
+      source: ServerConstants.GOOGLE_DRIVE,
+    }, projectId);
       }, (err) => { console.log(err); }
     );
   }
@@ -184,6 +204,15 @@ export const removeFileFromDrive = (fileId) => (
       () => {
         dispatch(deleteFile(fileId));
         dispatch(snackbarMessage('File deleted successfully', 'default'));
+        const payload = {
+          user_id: getLocalUserId(),
+          fileName: fileName,
+  };
+  serverCreatePost({
+      template: templates.DRIVE_REMOVE,
+      data: JSON.stringify(payload),
+      source: ServerConstants.GOOGLE_DRIVE,
+    }, projectId);
       }, (err) => { console.log(err); }
     );
   }
@@ -1173,3 +1202,21 @@ export const declineProject = (projectId, notificationId) => (
       }));
     }
   );
+
+  export function getCommits(repoName, repoOwner) {
+    console.log("hello", repoName, repoOwner);
+    return function(dispatch) {
+      console.log("inside getcommits function")
+      var token = localStorage.getItem('github_token');
+      console.log("token @ getCommits ReduxTaskActions : " + token);
+      getRepoCommits(repoName, repoOwner, token).then(res =>{
+        console.log("res", res);
+        console.log("res-data", res.data);
+        dispatch(_getCommit(res.data));
+        dispatch(snackbarMessage('Commits received', 'default'));
+        console.log("app side getCommits worked")
+      }).fail(e => {
+        console.log(e);
+      })
+    }
+  };

@@ -11,6 +11,7 @@ const CREATE_MESSAGE_ENDPOINT = '/messages';
 const INVITE_TO_PROJECT_ENDPOINT = '/invite_to_project';
 const POPULATE_ENDPOINT = '/user/populate';
 const GET_NOTIFICATION_ENDPOINT = '/notifications';
+const GET_COMMIT_ENDPOINT = `/github/repo/commits`;
 
 const API_BASE_URL = AppConstants.API_BASE_URL;
 const googleDriveAPIFiledParams =
@@ -338,3 +339,16 @@ export const serverEditMessage = (messageId, payload) => (
 export const serverDeleteMessage = (messageId) => (
   ajaxDelete(`/message/${messageId}`)
 );
+
+//NEW
+export const getRepoCommits = (name, owner, token) => (
+  /*$.ajax({
+    url: `https://api.github.com/repos/${owner}/${repo}/contributors`,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('github_token')}`,
+    },
+    type: 'GET',
+  }) */
+  //console.log("owner, name", owner, name)
+  ajaxGet(`/github/${owner}/${name}/commits`)
+); 
