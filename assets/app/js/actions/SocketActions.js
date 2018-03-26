@@ -79,6 +79,13 @@ export const monitorOnlineStatus = () => (
 
 export const monitorProjectChanges = () => (
   (dispatch, getState) => {
+    socket.on('get_commits', (data) => {
+      console.log(data);
+      dispatch(Actions.snackbarMessage(`Get commits`,
+        'info'));
+      dispatch(Actions._getCommits(data));
+      console.log("commits sent to app-side through socket");
+    }); 
     socket.on('new_task', (data) => {
       const name = getName(data.sender, getState().users);
       if (name) {
