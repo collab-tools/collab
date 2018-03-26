@@ -40,9 +40,12 @@ function createPost(request, reply) {
 }
 
 function updateNewsfeed(data, template, projectId, source, timestamp) {
+    var userId = data.userId
     return new Promise(function(resolve, reject) {
         storage.saveNewsfeed(JSON.stringify(data), template, projectId, source, timestamp).then(function(newsfeed) {
             socket.sendMessageToProject(projectId, 'newsfeed_post', newsfeed)
+            storage.saveNotification(JSON.stringify(data), template, userId)
+            console.log("updated newsfeed")
             resolve(newsfeed)
         }.bind(this), function(err) {
             console.error(err)
