@@ -71,7 +71,7 @@ class FilesList extends Component {
   createFolder() {
     const directoryStructure = this.props.directoryStructure;
     const currDirectory = _.last(directoryStructure).id;
-    this.props.actions.createFolderToDrive(currDirectory);
+    this.props.actions.createFolderToDrive(currDirectory, this.props.projectId);
   }
 
   uploadFile(file) {
@@ -80,14 +80,14 @@ class FilesList extends Component {
     const currDirectory = _.last(directoryStructure).id;
     this.props.actions.uploadFileToDrive(file, currDirectory, this.props.projectId);
   }
-  removeFile(fileId) {
-    this.props.actions.removeFileFromDrive(fileId);
+  removeFile(file) {
+    this.props.actions.removeFileFromDrive(file.id, file.name, this.props.projectId);
   }
-  copyFile(fileId) {
-    this.props.actions.copyFileToDrive(fileId);
+  copyFile(file) {
+    this.props.actions.copyFileToDrive(file.id, file.name, this.props.projectId);
   }
-  renameFile(fileId, newName) {
-    this.props.actions.renameFileToDrive(fileId, newName);
+  renameFile(file, newName) {
+    this.props.actions.renameFileToDrive(file.id, newName);
   }
 
   moveFile(fileId, oldParents, newParents) {
@@ -326,7 +326,7 @@ class FilesList extends Component {
               targetOrigin={{ horizontal: 'left', vertical: 'top' }}
             >
               <MenuItem
-                primaryText="preview"
+                primaryText="Preview"
                 leftIcon={<RemoveRedEyeIcon />}
                 onTouchTap={this.navigate.bind(this, file.id)}
               />
@@ -334,9 +334,9 @@ class FilesList extends Component {
               {
                 !isFolder(file) &&
                 <MenuItem
-                  primaryText="make a copy"
+                  primaryText="Make a copy"
                   leftIcon={<ContentCopyIcon />}
-                  onTouchTap={this.copyFile.bind(this, file.id)}
+                  onTouchTap={this.copyFile.bind(this, file)}
                 />
               }
               <MenuItem
@@ -353,7 +353,7 @@ class FilesList extends Component {
               <MenuItem
                 primaryText="Delete"
                 leftIcon={<DeleteIcon />}
-                onTouchTap={this.removeFile.bind(this, file.id)}
+                onTouchTap={this.removeFile.bind(this, file)}
               />
             </IconMenu>
           </td>
