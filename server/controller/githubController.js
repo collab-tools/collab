@@ -424,7 +424,7 @@ function getRepoCommits(request, reply) {
         url: GITHUB_ENDPOINT + '/repos' + '/' + repoOwner + '/' + repoName + '/contributors?state=all',
         headers: {
             'User-Agent': 'Collab',
-            'Authorization': 'Bearer ' + 'a86d8317a7b2b2db106af8aaef942052e6022482'
+            'Authorization': 'Bearer ' + token
         }
     }
     //console.log(request);
