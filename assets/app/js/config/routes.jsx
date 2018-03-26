@@ -14,6 +14,7 @@ export default (
     <Route path="project/:id" component={ProjectView}>
       <Route path={AppConstants.PATH.milestones} />
       <Route path={AppConstants.PATH.files} />
+      <Route path={AppConstants.PATH.github} />
       <Route path={AppConstants.PATH.newsfeed} />
       <Route path={AppConstants.PATH.settings} />
       <Route path={AppConstants.PATH.discussions} />
