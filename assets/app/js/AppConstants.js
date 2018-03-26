@@ -21,6 +21,7 @@ export const PATH = {
   newsfeed: 'newsfeed',
   settings: 'settings',
   discussions: 'discussions',
+  github: 'github',
 };
 export const GITHUB_CLIENT_ID = clientConfig.github_client_id;
 export const GOOGLE_CLIENT_ID = clientConfig.google_client_id;
@@ -97,3 +98,5 @@ export const UNPIN_MESSAGE = 'UNPIN_MESSAGE';
 export const EDIT_MESSAGE = 'EDIT_MESSAGE';
 export const EDIT_MESSAGE_CONTENT = 'EDIT_MESSAGE_CONTENT';
 export const DELETE_MESSAGE = 'DELETE_MESSAGE';
+//new
+export const GET_COMMITS = 'GET_COMMITS';
