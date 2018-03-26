@@ -12,6 +12,7 @@ var UserProject = models.UserProject;
 var Notification = models.Notification;
 var Newsfeed = models.Newsfeed;
 var Message = models.Message;
+var Commit = models.Commit;
 var analytics = require('collab-analytics')(config.database, config.logging_database);
 var format = require('string-format');
 
@@ -267,7 +268,13 @@ module.exports = {
     updateTask: function(task, taskId) {
         return Task.update(task, {
             where: {
-                id: taskId
+                id: taskId,
+                // update all attributes
+                content: task.content,
+                completed_on: task.completed_on,
+                github_id: task.github_id,
+                github_number: task.github_number,
+                assignee_id: task.assignee_id
             }
         })
     },
@@ -275,6 +282,11 @@ module.exports = {
         return Milestone.update(milestone, {
             where: {
                 id: milestoneId
+                // update all attributes
+                content: milestone.content,
+                deadline: milestone.deadline,
+                github_id: milestone.github_id,
+                github_number: milestone.github_number
             }
         })
     },
@@ -411,6 +423,26 @@ module.exports = {
             return new Promise(function(resolve, reject) {resolve(m)})
         })
     },
+        //new
+        findOrCreateCommit: function(commit) {
+            console.log(commit);
+            return Commit.find({
+                where: {
+                    project_id: commit.project_id,          
+                    //id: commitId,
+                }
+            }).then(function(com) {
+                if (!com) {
+                    commit.id = shortid.generate()
+                    return Commit.create(commit)
+                }
+                return new Promise(function(resolve, reject) {resolve(com)})
+            })
+        },
+        createCommit: function(commit) {
+            commit.id = shortid.generate()
+            return Commit.create(commit)
+        },
     createMilestone: function(milestone) {
         milestone.id = shortid.generate()
         return Milestone.create(milestone)
