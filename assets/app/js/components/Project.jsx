@@ -9,6 +9,7 @@ import ProjectFileView from '../containers/ProjectFileView.jsx';
 import ProjectNewsfeedView from '../containers/ProjectNewsfeedView.jsx';
 import ProjectSettingView from '../containers/ProjectSettingView.jsx';
 import ProjectMessageView from '../containers/ProjectMessageView.jsx';
+import ProjectGithubView from '../containers/ProjectGithubView.jsx';
 import _404 from './Common/_404.jsx';
 import { getCurrentTab, getProjectRoot } from '../utils/general';
 import * as AppConstants from '../AppConstants';
@@ -53,6 +54,7 @@ class Project extends Component {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     this.changeTabToMilestone = this.changeTab.bind(this, AppConstants.PATH.milestones);
     this.changeTabToFile = this.changeTab.bind(this, AppConstants.PATH.files);
+    this.changeTabToGithub = this.changeTab.bind(this, AppConstants.PATH.github);
     this.changeTabToDiscussion = this.changeTab.bind(this, AppConstants.PATH.discussions);
     this.changeTabToNewsfeed = this.changeTab.bind(this, AppConstants.PATH.newsfeed);
     this.changeTabToSetting = this.changeTab.bind(this, AppConstants.PATH.settings);
@@ -120,6 +122,17 @@ class Project extends Component {
               project={currentProject}
               actions={actions}
               app={app}
+            />
+          </Tab>
+            <Tab
+            className="project-github-tab"
+            buttonStyle={styles.tabButton}
+            label="Github"
+            value={AppConstants.PATH.github}
+            onActive={this.changeTabToGithub}
+          >
+            <ProjectGithubView
+              project={currentProject}
             />
           </Tab>
           <Tab
