@@ -7,15 +7,14 @@ const commits = [
     id: '123G4',
     contributions: { },
     contributors: 6,
+    contributions_url: 'https://github.com/owner/name/commits/master',
+    contributors_url: 'https://github.com/owner/name/graphs/contributors',
   },
 ];
 */
-// new
 const commits = (state = {}, action) => {
     switch (action.type) {
     case AppConstants.GET_COMMITS:
-      console.log("action payload " + action);
-      console.log("action commits" + action.commits);
       let payload = action.commits;
       let contributions = 0;
       let contributors = 0;
@@ -27,15 +26,11 @@ const commits = (state = {}, action) => {
         id: action.id,
         contributions: contributions,
         contributors: contributors,
+        contributions_url: payload.contributionsURL,
+        contributors_url: payload.contributorsURL,
       }
-      console.log("contributions: " + commitsState.contributions);
-      console.log("contributor: " + commitsState.contributors);
-      console.log("commits: " + commits);
         state.push(commitsState);
         return state;
-
-    case AppConstants.GET_CONTRIBUTORS:
-        return action.contributors;
     default:
       return state;
   }

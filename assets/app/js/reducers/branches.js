@@ -6,7 +6,7 @@ const branches = [
   {
     id: '123G4',
     branchCount: 4,
-    url: https://github.com/repos/owner/name/branches,
+    url: 'https://github.com/repos/owner/name/branches',
   },
 ];
 */

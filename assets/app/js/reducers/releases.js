@@ -2,11 +2,11 @@ import assign from 'object-assign';
 import * as AppConstants from '../AppConstants';
 /*
 Example state tree:
-const branches = [
+const releases = [
   {
     id: '123G4',
     releaseCount: 1,
-    url: https://github.com/repos/owner/name/releases,
+    url: 'https://github.com/repos/owner/name/releases',
   },
 ];
 */
