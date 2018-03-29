@@ -10,6 +10,8 @@ const getUsers = (state) => state.users;
 const getMessages = (state) => state.messages;
 const getProjects = (state) => state.projects;
 const getCommits = (state) => state.commits;
+const getBranches = (state) => state.branches;
+const getReleases = (state) => state.releases;
 
 export const getCurrentProject = createSelector(
   [getProjects, getProjectId],
@@ -26,8 +28,30 @@ export const getProjectCommits = createSelector(
   (commits, projectId) => {
     let projectCommits = {};
     if (commits)
-     projectCommits = commits.filter(commit => commit.project_id === projectId);
+      projectCommits = commits;
   return projectCommits;
+  }
+);
+
+export const getProjectBranches = createSelector(
+  [getBranches, getProjectId],
+  (branches, projectId) => {
+    let projectBranches = [];
+    if (branches) {
+      projectBranches = branches;
+    }
+  return projectBranches;
+  }
+);
+
+export const getProjectReleases = createSelector(
+  [getReleases, getProjectId],
+  (releases, projectId) => {
+    let projectReleases = [];
+    if (releases) {
+      projectReleases = releases;
+    }
+  return projectReleases;
   }
 );
 

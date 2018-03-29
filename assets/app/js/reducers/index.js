@@ -12,6 +12,9 @@ import newsfeed from './newsfeed';
 import search from './search';
 import snackbar from './snackbar';
 import messages from './messages';
+import commits from './commits';
+import branches from './branches';
+import releases from './releases';
 
 export default combineReducers({
   milestones,
@@ -27,4 +30,7 @@ export default combineReducers({
   search,
   snackbar,
   messages,
+  commits,
+  branches,
+  releases,
 });
