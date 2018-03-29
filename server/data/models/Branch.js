@@ -1,15 +1,13 @@
 var constants = require('../../constants');
 //new
 module.exports = function (Sequelize, DataTypes) {
-    return Sequelize.define(constants.COMMIT_MODEL_NAME, {
+    return Sequelize.define(constants.BRANCH_MODEL_NAME, {
         id: {
             type: DataTypes.STRING,
             primaryKey: true
         },
-        contributions: DataTypes.INT,
-        contributors: DataTypes.INT,
-        contributions_url: DataTypes.STRING,
-        contributors_url: DataTypes.STRING,
+        branchCount: DataTypes.INT,
+        url: DataTypes.STRING,
         project_id: DataTypes.TEXT,
     }, {
         underscored: true,
