@@ -44,6 +44,12 @@ module.exports = {
     getRepoCommits: {
         handler: getRepoCommits,
     },
+    getRepoBranches: {
+        handler: getRepoBranches,
+    },    
+    getRepoReleases: {
+        handler: getRepoReleases,
+    },
     createGithubIssue: createGithubIssue,
     updateGithubIssue: updateGithubIssue,
     createGithubMilestone: createGithubMilestone,
@@ -51,6 +57,9 @@ module.exports = {
     deleteGithubMilestone: deleteGithubMilestone,
     addGithubMilestonesToDB: addGithubMilestonesToDB,
     addGithubIssuesToDB: addGithubIssuesToDB,
+    syncCommits: syncCommits,
+    syncBranches: syncBranches,
+    syncReleases: syncReleases,
 };
 
 function addCollabMilestonesToGithub(owner, repo, token, projectId) {
@@ -381,8 +390,38 @@ function syncHandler(request, reply) {
                     reject(err)
                 })
             })
+            var githubCommitsToCollab = new Promise(function (resolve, reject) {
+                console.log("this better work githubcommitstocollab");
+                syncCommits(owner, name, token, projectId).then(function() {
+                    console.log("this worked wow githubcommitstocollab");
+                    resolve()
+                }, function (err) {
+                    reject(err)
+                })
+            })
+            var githubBranchesToCollab = new Promise(function (resolve, reject) {
+                console.log("this better work githubbranchestocollab");
+                syncBranches(owner, name, token, projectId).then(function() {
+                    console.log("this worked wow githubbranchestocollab");
+                    resolve()
+                }, function (err) {
+                    reject(err)
+                })
+            })
+            var githubReleasesToCollab = new Promise(function (resolve, reject) {
+                console.log("this better work githubreleasestocollab");
+                syncReleases(owner, name, token, projectId).then(function() {
+                    console.log("this worked wow githubreleasestocollab");
+                    resolve()
+                }, function (err) {
+                    reject(err)
+                })
+            })
             promises.push(githubToCollab)
             promises.push(collabToGithub)
+            promises.push(githubCommitsToCollab)
+            promises.push(githubBranchesToCollab)
+            promises.push(githubReleasesToCollab)
             Promise.all(promises).then(function() {
                 reply({status: 'OK'})
             }).catch(function(err) {
@@ -418,8 +457,9 @@ function getAccessToken(request, reply) {
 }
 
 function getRepoCommits(request, reply) {
+    var projectId = request.params.project_id;
     var repoOwner = request.params.owner;
-    var repoName = request.params.name; //need to fetch: 1. no. of commits, 2. no of contributors for new github tab
+    var repoName = request.params.name;
     var options = {
         url: GITHUB_ENDPOINT + '/repos' + '/' + repoOwner + '/' + repoName + '/contributors?state=all',
         headers: {
@@ -427,35 +467,245 @@ function getRepoCommits(request, reply) {
             'Authorization': 'Bearer ' + token
         }
     }
-    //console.log(request);
     return new Promise(function (resolve, reject) {
         req.get(options, function (err, res, body) {
             if (err) {
-                console.log("repocommits api error");
                 return reject(err)
             }
-            //console.log("token: );
-            console.log("owner :" + request.params.owner);
-            console.log("name: " + request.params.name);
-            //console.log("projectID: " + request.payload.project_id);
-            console.log("githubcontroller getRepocommits");
             var commitPayload = JSON.parse(body)
-            console.log(commitPayload);
+            let contributions = 0;
+            let contributors = 0;
+            var contributorsURL = 'https://github.com' + '/' + repoOwner + '/' + repoName + '/graphs/contributors';
+            var contributionsURL = 'https://github.com' + '/' + repoOwner + '/' + repoName + '/commits/master';
+
             if (commitPayload.length > 0) {
-                console.log("githubcontroller getRepocommits passed the if");
-                //var projectId = storage.getProjectsWithCondition({ github_repo_name: repoName, github_repo_owner: repoOwner })
-                var projectId = 'EkpGw0oFE';
-                //addGithubCommitsToDB(commitPayload, projectId).done(function (commits) {
-                    socket.sendMessageToProject(projectId, 'get_commits', commitPayload);
+                commitPayload.forEach(function (commit) {
+                  contributions += commit.contributions;
+                  contributors += 1;
+                })
+                let commitsObject = {
+                  id: projectId,
+                  contributions: contributions,
+                  contributors: contributors,
+                  contributions_url: contributionsURL,
+                  contributors_url: contributorsURL,
+                }
+                    socket.sendMessageToProject(projectId, 'get_commits', commitsObject);
                     //reply(m);
-                    console.log("commits received at client side and sent to app-side")
-                    return resolve(commitPayload)
-                //})
+                    return resolve(commitsObject)
             } else {
                 return resolve(true)
             }
         })
     })
+}
+
+function syncCommits(owner, name, token, projectId) {
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + owner + '/' + name + '/contributors?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                return reject(err)
+            }
+            var commitPayload = JSON.parse(body)
+            console.log(commitPayload);
+            let contributions = 0;
+            let contributors = 0;
+            var contributorsURL = 'https://github.com' + '/' + owner + '/' + name + '/graphs/contributors';
+            var contributionsURL = 'https://github.com' + '/' + owner + '/' + name + '/commits/master';
+            if (commitPayload.length > 0) {
+                commitPayload.forEach(function (commit) {
+                  contributions += commit.contributions;
+                  contributors += 1;
+                })
+                let commitsObject = {
+                  id: projectId,
+                  contributions: contributions,
+                  contributors: contributors,
+                  contributions_url: contributionsURL,
+                  contributors_url: contributorsURL,
+                }
+                    socket.sendMessageToProject(projectId, 'get_commits', commitsObject);
+                    //reply(m);
+                    console.log("Syncing commits received at client side and sent to app-side")
+                    return resolve(commitsObject)
+            } else {
+                return resolve(true)
+            }
+        })
+    })
+
+}
+
+function getRepoBranches(request, reply) {
+    var projectId = request.params.project_id;
+    var repoOwner = request.params.owner;
+    var repoName = request.params.name;
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + repoOwner + '/' + repoName + '/branches?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                return reject(err)
+            }
+            var branchesPayload = JSON.parse(body)
+            let branchCount = 0;
+            var branchURL = 'https://github.com' + '/' + repoOwner + '/' + repoName + '/branches';
+            if (branchesPayload.length > 0) {
+                branchesPayload.forEach(function (commit) {
+                  branchCount += 1;
+                })
+                let branchObject = {
+                  id: projectId,
+                  branchCount: branchCount,
+                  url: branchURL,
+                }
+                    socket.sendMessageToProject(projectId, 'get_branches', branchObject);
+                    //reply(m);
+                    return resolve(branchObject)
+            } else {
+                return resolve(true)
+            }
+        })
+    })
+}
+
+function syncBranches(owner, name, token, projectId) {
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + owner + '/' + name + '/branches?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                return reject(err)
+            }
+            var branchPayload = JSON.parse(body)
+            let branchCount = 0;
+            var branchURL = 'https://github.com' + '/' + owner + '/' + name + '/branches';
+            if (branchPayload.length > 0) {
+                branchPayload.forEach(function (commit) {
+                    branchCount += 1;
+                  })
+                  let branchObject = {
+                    id: projectId,
+                    branchCount: branchCount,
+                    url: branchURL,
+                  }
+                    socket.sendMessageToProject(projectId, 'get_branches', branchObject);
+                    //reply(m);
+                    return resolve(branchObject)
+            } else {
+                return resolve(true)
+            }
+        })
+    })
+
+}
+
+function getRepoReleases(request, reply) {
+    var projectId = request.params.project_id;
+    var repoOwner = request.params.owner;
+    var repoName = request.params.name;
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + repoOwner + '/' + repoName + '/releases?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                return reject(err)
+            } 
+            var releasesPayload = JSON.parse(body)
+            let releaseCount = 0;
+            var releaseURL = 'https://github.com' + '/' + repoOwner + '/' + repoName + '/releases';
+            if (releasesPayload.length > 0) {
+                releasesPayload.forEach(function (commit) {
+                  releaseCount += 1;
+                })
+                let releaseObject = {
+                  id: projectId,
+                  releaseCount: releaseCount,
+                  url: releaseURL,
+                }
+                socket.sendMessageToProject(projectId, 'get_releases', releaseObject);
+                //reply(m);
+                return resolve(releaseObject)
+            } else {
+                let releaseObject = {
+                    id: projectId,
+                    releaseCount: 0,
+                    url: releaseURL,
+                }
+                socket.sendMessageToProject(projectId, 'get_releases', releaseObject);
+                //reply(m);
+                return resolve(releaseObject)
+            }
+        })
+    })
+}
+
+function syncReleases(owner, name, token, projectId) {
+    var options = {
+        url: GITHUB_ENDPOINT + '/repos' + '/' + owner + '/' + name + '/releases?state=all',
+        headers: {
+            'User-Agent': 'Collab',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+
+    return new Promise(function (resolve, reject) {
+        req.get(options, function (err, res, body) {
+            if (err) {
+                return reject(err)
+            }
+            var releasePayload = JSON.parse(body)
+            let releaseCount = 0;
+            var releaseURL = 'https://github.com' + '/' + owner + '/' + name + '/releases';
+            if (releasePayload.length > 0) {
+                releasePayload.forEach(function (commit) {
+                    releaseCount += 1;
+                  })
+                  let releaseObject = {
+                    id: projectId,
+                    releaseCount: releaseCount,
+                    url: releaseURL,
+                  }
+                    socket.sendMessageToProject(projectId, 'get_releases', releaseObject);
+                    //reply(m);
+                    return resolve(releaseObject)
+            } else {
+                let releaseObject = {
+                    id: projectId,
+                    releaseCount: 0,
+                    url: releaseURL,
+                }
+                socket.sendMessageToProject(projectId, 'get_releases', releaseObject);
+                //reply(m);
+                return resolve(releaseObject)
+            }
+        })
+    })
+
 }
 
 //new

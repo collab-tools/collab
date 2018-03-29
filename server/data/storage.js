@@ -281,7 +281,7 @@ module.exports = {
     updateMilestone: function(milestone, milestoneId) {
         return Milestone.update(milestone, {
             where: {
-                id: milestoneId
+                id: milestoneId,
                 // update all attributes
                 content: milestone.content,
                 deadline: milestone.deadline,
@@ -423,26 +423,6 @@ module.exports = {
             return new Promise(function(resolve, reject) {resolve(m)})
         })
     },
-        //new
-        findOrCreateCommit: function(commit) {
-            console.log(commit);
-            return Commit.find({
-                where: {
-                    project_id: commit.project_id,          
-                    //id: commitId,
-                }
-            }).then(function(com) {
-                if (!com) {
-                    commit.id = shortid.generate()
-                    return Commit.create(commit)
-                }
-                return new Promise(function(resolve, reject) {resolve(com)})
-            })
-        },
-        createCommit: function(commit) {
-            commit.id = shortid.generate()
-            return Commit.create(commit)
-        },
     createMilestone: function(milestone) {
         milestone.id = shortid.generate()
         return Milestone.create(milestone)
