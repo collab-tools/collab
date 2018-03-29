@@ -29,7 +29,9 @@ module.exports = {
   GOOGLE_DRIVE: 'GOOGLE_DRIVE',
   COLLAB_TASK: 'COLLAB_TASK',
   COLLAB_MILESTONE: 'COLLAB_MILESTONE',
-  COMMIT_MODEL_NAME: 'commits', //new
+  COMMIT_MODEL_NAME: 'commits',
+  BRANCH_MODEL_NAME: 'branches',
+  RELEASE_MODEL_NAME: 'releases',
 
   systemMessageTypes: {
     CREATE_TASK: 'CREATE_TASK',
