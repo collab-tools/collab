@@ -47,7 +47,9 @@ module.exports.endpoints = [
 
     { method: 'POST',  path: '/github/oauth/access_token', config: Github.getAccessToken },
     { method: 'POST',  path: '/github/sync/{project_id}', config: Github.sync },
-    { method: 'GET',  path: '/github/{owner}/{name}/commits', config: Github.getRepoCommits}, //new
+    { method: 'GET',  path: '/github/{project_id}/{owner}/{name}/commits', config: Github.getRepoCommits}, //new
+    { method: 'GET', path: '/github/{project_id}/{owner}/{name}/branches', config: Github.getRepoBranches},
+    { method: 'GET', path: '/github/{project_id}/{owner}/{name}/releases', config: Github.getRepoReleases},
  
     { method: 'POST',  path: '/webhook/github/setup', config: WebHook.setupGithubWebhook },
     { method: 'POST',  path: '/webhook/github', config: WebHook.githubWebhook }, //github webhook handler
