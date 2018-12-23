@@ -48,5 +48,6 @@
     "api_base_url": "",
     "google_client_id": "",
     "github_client_id": "",
+    "dashboard_root_url": ""
   }
 }

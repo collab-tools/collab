@@ -6,13 +6,13 @@ module.exports = {
       'dropbox_refresh_token',
       Sequelize.BOOLEAN
     );
-  },
+  }//,
 
-  down: (queryInterface, Sequelize) => {
+  //down: (queryInterface, Sequelize) => {
     // logic for reverting the changes
-    queryInterface.removeColumn(
-      'users',
-      'dropbox_refresh_token'
-    );
-  }
+    //queryInterface.removeColumn(
+    //  'users',
+    //  'dropbox_refresh_token'
+    //);
+  //}
 }

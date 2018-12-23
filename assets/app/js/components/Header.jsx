@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import $ from 'jquery';
 import { logout } from '../utils/auth.js';
 import SearchBar from './Search/SearchBar.jsx';
+import { accessCollabDashboard } from '../utils/collabDashboard.js';
 
 const propTypes = {
   actions: PropTypes.object.isRequired,
@@ -164,6 +165,7 @@ class Header extends Component {
               </span>
               <div id="hangouts-btn-placeholder" />
             </span>
+            <button className="btn btn-info" onClick={accessCollabDashboard}> Dashboard </button>
           </div>
         }
       />

@@ -851,6 +851,10 @@ export const declineProject = (projectId, notificationId) => (
           currProj.basic.push(user.id);
         } else if (user.role === 'pending') {
           currProj.pending.push(user.id);
+        } else if (user.role === 'supervisor') {
+          currProj.basic.push(user.id);
+        } else if (user.role === 'supervisor_creator') {
+          currProj.basic.push(user.id);
         } else {
           throw new Error("user has invalid role: " + user.role);
         }

@@ -22,6 +22,8 @@ module.exports = {
   ROLE_CREATOR: 'creator',
   ROLE_BASIC: 'basic',
   ROLE_PENDING: 'pending',
+  ROLE_SUPERVISOR: 'supervisor',
+  ROLE_SUPERVISOR_CREATOR: 'supervisor_creator',
   FORBIDDEN: 'The token given does not have access to this resource',
   NO_GITHUB_LOGIN: 'NO_GITHUB_LOGIN',
   NO_GITHUB_NUMBER: 'NO_GITHUB_NUMBER',

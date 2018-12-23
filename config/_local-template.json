@@ -1,25 +1,31 @@
 {
   "database": {
-    "username": "YOUR_DB_USERNAME",
-    "password": ""
+    "username": "<YOUR_COLLAB_DB_USERNAME>",
+    "password": "<YOUR_COLLAB_DB_PASSWORD>"
   },
   "logging_database": {
-    "username": "YOUR_DB_USERNAME",
-    "password": ""
+    "username": "<YOUR_COLLAB_LOGGING_DB_USERNAME>",
+    "password": "<YOUR_COLLAB_LOGGING_DB_PASSWORD>"
   },
   "authentication": {
     "privateKey": "YOUR_PRIVATE_KEY"
   },
   "github": {
-    "client_secret": ""
+    "client_id": "<GITHUB_CLIENT_ID>",
+    "client_secret": "<GITHUB_CLIENT_SECRET>"
   },
   "google": {
-    "client_secret": "GOOGLE_SECRET"
+    "client_id": "<GOOGLE_CLIENT_ID>",
+    "client_secret": "<GOOGLE_SECRET>"
+  },
+  "client_config": {
+    "google_client_id": "<GOOGLE_CLIENT_ID>",
+    "dashboard_root_url": "<DASHBOARD_ROOT_URL>"
   },
   "integration_test_account": {
-      "user_id": "TEST_USER_ID",
-      "refresh_token": "TEST_REFRESH_TOKEN",
-      "email": "TEST_EMAIL",
-      "display_image": "TEST_DISPLAY_IMAGE"
+      "user_id": "<TEST_USER_ID>",
+      "refresh_token": "<TEST_REFRESH_TOKEN>",
+      "email": "<TEST_EMAIL>",
+      "display_image": "<TEST_DISPLAY_IMAGE>"
   }
 }
