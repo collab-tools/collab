@@ -5,6 +5,7 @@ const base64json = require("base64json");
 const configEncoded = Cookies.getJSON("config");
 
 const defaultConfig = {
+
   hostname: "http://localhost:8080",
   app_root_url: "http://localhost:8080/app",
   api_base_url: "http://localhost:8080",
@@ -12,6 +13,7 @@ const defaultConfig = {
     "251991763841-3at7cvsqmra7q78m7ptp5ai89s3doi35.apps.googleusercontent.com",
   github_client_id: "d541a87c15b974bf55a7",
   dashboard_root_url: "http://localhost:4000/auth/login"
+
 };
 
 const clientConfig =
