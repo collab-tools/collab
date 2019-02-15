@@ -88,7 +88,7 @@ function login(request, reply) {
       var google_refresh_token = tokens.refresh_token
       var expiry_date = tokens.expiry_date
       var options = {
-        url: 'https://www.googleapis.com/plus/v1/people/me',
+        url: 'https://people.googleapis.com/v1/people/me?personFields=names,photos,emailAddresses',
         headers: {
           'User-Agent': 'Collab',
           'Authorization': 'Bearer ' + access_token
@@ -101,11 +101,11 @@ function login(request, reply) {
         }
         console.log(body);
         var profileInfo = JSON.parse(body)
-        var googleId = profileInfo.id
+        var googleId = profileInfo.names[0].metadata.source.id
         var u = {
-          display_image: profileInfo.image.url,
-          display_name: profileInfo.displayName,
-          email: profileInfo.emails[0].value,
+          display_image: profileInfo.photos[0].url,
+          display_name: profileInfo.names[0].displayName,
+          email: profileInfo.emailAddresses[0].value,
           google_id: googleId
         }
         if (google_refresh_token) {
