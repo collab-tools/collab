@@ -1,6 +1,7 @@
 var config = require('config');
 var req = require('request')
 var authController = require('../../../../server/controller/authController');
+var googleLogin = require('../googleAuthUtils');
 
 function login() {
   const CLIENT_ID = config.get('google.client_id');
@@ -67,8 +68,48 @@ function login() {
   return this;
 }
 
+function loginAsGoogleUser() {
+  const EMAIL = config.get('integration_test_google_account.email');
+  const PASSWORD = config.get('integration_test_google_account.password');
+
+  this.api.perform(function (client, done) {
+    client.url('http://localhost:8080/');
+    client
+      .click('.btn.btn-social.btn-google')
+      .perform(function(client, done) {
+        googleLogin(client, EMAIL, PASSWORD, function(result){
+          client.waitForElementVisible('#task-panel', 10000);
+          client.assert.visible('#task-panel', 'User 1 is logged in');
+          done();
+        })
+      })
+    done();
+  });
+  return this;
+}
+
+function loginAsGoogleUser2() {
+  const EMAIL = config.get('integration_test_google_account_2.email');
+  const PASSWORD = config.get('integration_test_google_account_2.password');
+
+  this.api.perform(function (client, done) {
+    client.url('http://localhost:8080/');
+    client
+      .click('.btn.btn-social.btn-google')
+      .perform(function(client, done) {
+        googleLogin(client, EMAIL, PASSWORD, function(result){
+          client.waitForElementVisible('#task-panel', 10000);
+          client.assert.visible('#task-panel', 'User 2 is logged in');
+          done();
+        })
+      })
+    done();
+  });
+  return this;
+}
+
 const loginCommands = {
-  login,
+  login, loginAsGoogleUser, loginAsGoogleUser2,
 };
 
 module.exports = {

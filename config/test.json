@@ -45,5 +45,13 @@
       "refresh_token": "",
       "email": "",
       "display_image": ""
+  },
+  "integration_test_google_account": {
+    "email": "",
+    "password": ""
+  },
+  "integration_test_google_account_2": {
+    "email": "",
+    "password": ""
   }
 }

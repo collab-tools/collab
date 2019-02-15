@@ -92,7 +92,7 @@ function setupGithubWebhook(request, reply) {
 
 function githubWebhookHandler(request, reply) {
     //https://developer.github.com/webhooks/#events
-    var payload = request.payload
+    var payload = JSON.parse(request.payload.payload)
     var event = request.headers['x-github-event']
     var githubUser = payload.sender.login
     var repoName = payload.repository.name

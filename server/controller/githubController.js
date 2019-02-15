@@ -171,7 +171,7 @@ function addGithubIssuesToDB(issues, projectId, milestoneId) {
             project_id: projectId,
             milestone_id: milestoneId
         }
-        promises.push(storage.findOrCreateTask(task))
+        promises.push(storage.createTask(task))
     })
     return Sequelize.Promise.all(promises)
 }

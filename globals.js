@@ -3,6 +3,7 @@ var binPath = chromedriver.path;
 module.exports = {
   before : function(done) {
     console.log('starting chromedriver');
+    chromedriver.stop();
     chromedriver.start();
     done();
   },

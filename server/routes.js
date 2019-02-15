@@ -6,6 +6,7 @@ var Project = require('./controller/projectController');
 var User = require('./controller/userController');
 var Notification = require('./controller/notificationController');
 var Github = require('./controller/githubController')
+var Drive = require('./controller/driveController')
 var WebHook = require('./controller/webhookController')
 var Newsfeed = require('./controller/newsfeedController')
 var Message = require('./controller/messageController')
@@ -17,7 +18,7 @@ module.exports.endpoints = [
     { method: 'GET',  path: '/', config: Static.index },
 
     { method: 'POST',  path: '/login', config: Auth.login },
-    { method: 'POST',  path: '/refresh_google_token', config: Auth.refreshGoogleToken },
+    { method: 'POST',  path: '/refresh_tokens', config: Auth.refreshTokens },
 
     { method: 'POST',  path: '/tasks', config: Task.createTask },
     { method: 'GET',  path: '/task/{task_id}', config: Task.getTask },
@@ -47,6 +48,8 @@ module.exports.endpoints = [
 
     { method: 'POST',  path: '/github/oauth/access_token', config: Github.getAccessToken },
     { method: 'POST',  path: '/github/sync/{project_id}', config: Github.sync },
+
+    { method: 'POST',  path: '/drive/permissions/{file_id}', config: Drive.givePermissions },
 
     { method: 'POST',  path: '/webhook/github/setup', config: WebHook.setupGithubWebhook },
     { method: 'POST',  path: '/webhook/github', config: WebHook.githubWebhook },

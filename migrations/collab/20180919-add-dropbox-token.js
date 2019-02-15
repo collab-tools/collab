@@ -4,7 +4,7 @@ module.exports = {
     queryInterface.addColumn(
       'users',
       'dropbox_refresh_token',
-      Sequelize.BOOLEAN
+      Sequelize.STRING
     );
   },
 

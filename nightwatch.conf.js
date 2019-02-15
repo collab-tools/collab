@@ -34,6 +34,7 @@ module.exports = {
           args: [
             '--no-sandbox',
             '--headless',
+            'disable-popup-blocking',
             'start-fullscreen',
             'window-size=1280,800',
           ],

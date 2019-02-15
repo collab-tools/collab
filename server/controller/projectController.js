@@ -6,6 +6,7 @@ var Joi = require('joi')
 var Boom = require('boom')
 var helper = require('../utils/helper')
 var notifications = require('./notificationController')
+var drive = require('./driveController')
 var templates = require('./../templates')
 var accessControl = require('./accessControl');
 var _ = require('lodash')
@@ -54,7 +55,8 @@ module.exports = {
         validate: {
             payload: {
                 project_id: Joi.string().required(),
-                email: Joi.string().email().required()
+                email: Joi.string().email().required(),
+                google_token: Joi.string()
             }
         }
     }
@@ -149,6 +151,7 @@ function inviteToProject(request, reply) {
             var toUser = user.id
 
             storage.inviteToProject(toUser, request.payload.project_id).then(function() {
+                drive.createPermissions(fromUser, request.payload.project_id, matchingProjects[0].root_folder, request.payload.google_token);
                 var notifData = {
                     user_id: fromUser,
                     project_id: matchingProjects[0].id

@@ -239,6 +239,13 @@ export const setupGithubWebhook = (name, owner) => (
   })
 );
 
+export const giveDrivePermissions = (fileId, projectId) => (
+  ajaxPost(`/drive/permissions/${fileId}`, {
+    project_id: projectId,
+    google_token: localStorage.getItem('google_token'),
+  })
+);
+
 export const serverDeleteNotification = (id) => (
   ajaxDelete(`/notification/${id}`)
 );
@@ -323,7 +330,7 @@ export const serverMarkDone = (task_id, project_id) => (
 );
 
 export const refreshTokens = () => (
-  ajaxPost('/refresh_google_token')
+  ajaxPost('/refresh_tokens')
 );
 
 export const serverCreateMessage = (payload) => (

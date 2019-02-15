@@ -11,7 +11,7 @@ import { serverCreateTask, serverDeleteTask, serverUpdateGithubLogin, serverMark
   syncGithubIssues, serverEditTask, serverEditMilestone, queryGithub, setupGithubWebhook,
   queryGoogleDrive, serverDeclineProject, uploadFile, removeFile, renameFile, copyFile,
   createFolder, moveFile, serverCreateMessage, serverEditMessage, serverDeleteMessage,
-  serverGetNewesfeed, refreshTokens, listRepoEvents } from '../utils/apiUtil';
+  serverGetNewesfeed, refreshTokens, listRepoEvents, giveDrivePermissions } from '../utils/apiUtil';
 import { filterUnique, getCurrentProject, getNewColour, getLocalUserId } from '../utils/general';
 import { userIsOnline } from './SocketActions';
 import { logout } from '../utils/auth';
@@ -757,7 +757,7 @@ export const declineProject = (projectId, notificationId) => (
 
   export function inviteToProject(projectId, email) {
     return function(dispatch) {
-      serverInviteToProject({email: email, project_id: projectId})
+      serverInviteToProject({email: email, project_id: projectId, google_token: localStorage.getItem('google_token')})
       .done(res => {
         dispatch(projectAlert(AppConstants.INVITED_TO_PROJECT));
       }).fail(e => {
@@ -980,6 +980,7 @@ export const declineProject = (projectId, notificationId) => (
     return function(dispatch) {
       serverUpdateProject(projectId, {root_folder: folderId}).done(res => {
         dispatch(_setDirectoryAsRoot(projectId, folderId))
+        giveDrivePermissions(folderId, projectId)
         dispatch(snackbarMessage('Directory set as root', 'default'))
       }).fail(e => {
         console.log(e)

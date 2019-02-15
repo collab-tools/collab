@@ -24,7 +24,7 @@ module.exports = {
       parse: true
     }
   },
-  refreshGoogleToken: {
+  refreshTokens: {
     handler: refreshTokens
   },
   get_token,
